@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Script from 'next/script';
 import { useSearchParams } from 'next/navigation';
 import PricingCard from './PricingCard';
-import { ShieldCheck, CheckCircle2, AlertCircle, Zap, Lock, X, Activity, User, Mail, Phone, ArrowRight } from 'lucide-react';
+import { ShieldCheck, CheckCircle2, AlertCircle, Lock, X, User, Mail, Phone, ArrowRight } from 'lucide-react';
 import { trackEvent } from '@/lib/analytics';
 
 export default function PricingPreview() {
@@ -127,8 +127,8 @@ export default function PricingPreview() {
   const plans = [
     {
       name: "Starter Workflow",
-      priceINR: "₹1",
-      period: "/test payment",
+      priceINR: "₹9,999",
+      period: "/month",
       description: "Ideal for small teams automating 1-2 core lead qualification pipelines.",
       features: [
         "Up to 2 Custom n8n Workflows",
@@ -137,11 +137,11 @@ export default function PricingPreview() {
         "Email & WhatsApp Webhooks",
         "Standard SLA (48hr Response)"
       ],
-      ctaText: "Pay ₹1 Live Test"
+      ctaText: "Get Started"
     },
     {
       name: "Growth Automation",
-      priceINR: "₹1,99,999",
+      priceINR: "₹29,999",
       period: "/month",
       popular: true,
       description: "For scaling companies needing complete business process automation.",
@@ -153,7 +153,7 @@ export default function PricingPreview() {
         "Priority Support & 24hr SLA",
         "Dedicated n8n Server Setup"
       ],
-      ctaText: "Get Started Now"
+      ctaText: "Get Started"
     },
     {
       name: "Custom Enterprise",
@@ -190,11 +190,6 @@ export default function PricingPreview() {
           <p className="text-slate-400 text-sm sm:text-base">
             Instant online enrollment powered securely by Razorpay.
           </p>
-
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-mono font-bold">
-            <Zap className="w-3.5 h-3.5" />
-            <span>Starter Tier Set to ₹1 for Live Test</span>
-          </div>
         </div>
 
         {/* Notifications */}
@@ -252,7 +247,7 @@ export default function PricingPreview() {
                 Enter Details for <span className="text-emerald-400">{targetPlan}</span>
               </h3>
               <p className="text-xs text-slate-400">
-                Please enter your email to receive invoice receipts & n8n setup instructions.
+                Please enter your details to receive invoice receipts & n8n setup instructions.
               </p>
             </div>
 

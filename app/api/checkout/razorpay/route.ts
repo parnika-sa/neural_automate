@@ -7,8 +7,8 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const planName = sanitizeInput(body.planName || 'Starter Workflow');
 
-    // Starter Workflow set to ₹1 (100 paise) for live payment testing, Growth set to ₹199,999 (19999900 paise)
-    const amountInPaise = planName.includes('Growth') ? 19999900 : 100;
+    // Starter Workflow: ₹9,999 (999900 paise), Growth Automation: ₹29,999 (2999900 paise)
+    const amountInPaise = planName.includes('Growth') ? 2999900 : 999900;
 
     const keyId = process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || 'rzp_live_TNDkm8zEcs3gwF';
     const keySecret = process.env.RAZORPAY_KEY_SECRET || 'PWH1JCVExjom0po6EmsB47fg';
