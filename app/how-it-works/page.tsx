@@ -92,7 +92,6 @@ export default function HowItWorksPage() {
         </div>
       </section>
 
-      <FinalCTA />
     </div>
   );
 }

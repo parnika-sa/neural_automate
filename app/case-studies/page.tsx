@@ -63,7 +63,6 @@ export default function CaseStudiesPage() {
         </div>
       </div>
 
-      <FinalCTA />
     </div>
   );
 }

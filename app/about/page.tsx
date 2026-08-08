@@ -75,7 +75,6 @@ export default function AboutPage() {
         </div>
       </div>
 
-      <FinalCTA />
     </div>
   );
 }

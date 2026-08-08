@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 import { ArrowRight, Sparkles, CheckCircle2, Cpu } from 'lucide-react';
 
 export default function FinalCTA() {
@@ -29,14 +30,14 @@ export default function FinalCTA() {
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
-              <a
-                href="mailto:info@neuralautomate.dev"
+              <Link
+                href="/contact"
                 className="w-full sm:w-auto px-8 py-4 rounded-xl font-bold text-sm text-slate-950 bg-gradient-to-r from-emerald-400 via-mint-400 to-emerald-500 hover:from-emerald-300 hover:to-emerald-400 transition-all shadow-xl shadow-emerald-500/20 flex items-center justify-center gap-2"
               >
                 <Cpu className="w-4 h-4" />
                 <span>Book a Free Consultation</span>
                 <ArrowRight className="w-4 h-4" />
-              </a>
+              </Link>
             </div>
 
             <div className="pt-4 flex flex-wrap justify-center items-center gap-6 text-xs font-mono text-slate-400">
