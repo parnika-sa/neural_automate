@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Script from 'next/script';
 import { useSearchParams } from 'next/navigation';
 import PricingCard from './PricingCard';
-import { ShieldCheck, CheckCircle2, AlertCircle, Zap } from 'lucide-react';
+import { ShieldCheck, CheckCircle2, AlertCircle, Zap, Lock, X, Activity, User, Mail, Phone, ArrowRight } from 'lucide-react';
 import { trackEvent } from '@/lib/analytics';
 
 export default function PricingPreview() {
@@ -12,6 +12,15 @@ export default function PricingPreview() {
 
   const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
   const [notification, setNotification] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+
+  // Customer Details Checkout Modal State
+  const [modalOpen, setModalOpen] = useState(false);
+  const [targetPlan, setTargetPlan] = useState<string | null>(null);
+  const [customerDetails, setCustomerDetails] = useState({
+    name: '',
+    email: '',
+    phone: '',
+  });
 
   useEffect(() => {
     const paymentStatus = searchParams.get('payment');
@@ -30,17 +39,26 @@ export default function PricingPreview() {
     }
   }, [searchParams]);
 
-  const handleCheckout = async (planName: string) => {
-    setLoadingPlan(planName);
+  const handlePlanSelect = (planName: string) => {
     setNotification(null);
+    setTargetPlan(planName);
+    setModalOpen(true);
+  };
 
-    trackEvent('pricing_cta_clicked', { planName, gateway: 'razorpay' });
+  const startRazorpayCheckout = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!targetPlan || !customerDetails.email || !customerDetails.name) return;
+
+    setModalOpen(false);
+    setLoadingPlan(targetPlan);
+
+    trackEvent('pricing_cta_clicked', { planName: targetPlan, gateway: 'razorpay' });
 
     try {
       const res = await fetch('/api/checkout/razorpay', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ planName }),
+        body: JSON.stringify({ planName: targetPlan }),
       });
 
       const data = await res.json();
@@ -54,18 +72,19 @@ export default function PricingPreview() {
           amount: data.amount,
           currency: data.currency,
           name: 'NeuralAutomate.dev',
-          description: `${planName} Subscription`,
+          description: `${targetPlan} Plan Subscription`,
           order_id: data.orderId,
           handler: async function (response: any) {
-            setLoadingPlan(planName);
+            setLoadingPlan(targetPlan);
             const verifyRes = await fetch('/api/checkout/razorpay/verify', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
                 ...response,
-                planName,
-                customerEmail: 'client@company.dev',
-                customerName: 'Valued Client',
+                planName: targetPlan,
+                customerEmail: customerDetails.email.trim(),
+                customerName: customerDetails.name.trim(),
+                customerPhone: customerDetails.phone.trim(),
               }),
             });
 
@@ -73,9 +92,9 @@ export default function PricingPreview() {
             if (verifyRes.ok) {
               setNotification({
                 type: 'success',
-                message: `🎉 Razorpay Payment Verified! Welcome email dispatched from info@neuralautomate.dev.`,
+                message: `🎉 Razorpay Payment Verified! Welcome email dispatched to ${customerDetails.email}.`,
               });
-              trackEvent('payment_completed', { gateway: 'razorpay', planName, paymentId: response.razorpay_payment_id });
+              trackEvent('payment_completed', { gateway: 'razorpay', planName: targetPlan, paymentId: response.razorpay_payment_id });
             } else {
               setNotification({ type: 'error', message: verifyData.error || 'Razorpay payment verification failed.' });
             }
@@ -87,11 +106,11 @@ export default function PricingPreview() {
             },
           },
           prefill: {
-            name: 'Ankit Sharma',
-            email: 'info@neuralautomate.dev',
-            contact: '+919999999999',
+            name: customerDetails.name,
+            email: customerDetails.email,
+            contact: customerDetails.phone || '',
           },
-          theme: { color: '#10b981' },
+          theme: { color: '#040705' },
         };
 
         const rzp = new (window as any).Razorpay(options);
@@ -199,7 +218,7 @@ export default function PricingPreview() {
             <PricingCard
               key={i}
               {...p}
-              onCheckout={handleCheckout}
+              onCheckout={handlePlanSelect}
               loadingPlan={loadingPlan}
             />
           ))}
@@ -211,6 +230,96 @@ export default function PricingPreview() {
         </div>
 
       </div>
+
+      {/* Modern Customer Checkout Details Modal */}
+      {modalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+          <div className="tech-card rounded-3xl p-6 sm:p-8 border border-emerald-500/40 bg-[#07120a] max-w-md w-full relative space-y-6 shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+            
+            <button
+              onClick={() => setModalOpen(false)}
+              className="absolute top-5 right-5 text-slate-400 hover:text-white transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <div className="space-y-2 border-b border-tech-border pb-4">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-[11px] font-mono font-bold">
+                <Lock className="w-3.5 h-3.5" />
+                <span>256-Bit SSL Encrypted Checkout</span>
+              </div>
+              <h3 className="text-xl font-display font-extrabold text-white">
+                Enter Details for <span className="text-emerald-400">{targetPlan}</span>
+              </h3>
+              <p className="text-xs text-slate-400">
+                Please enter your email to receive invoice receipts & n8n setup instructions.
+              </p>
+            </div>
+
+            <form onSubmit={startRazorpayCheckout} className="space-y-4">
+              <div>
+                <label className="block text-[11px] font-mono font-bold text-slate-300 mb-1">
+                  YOUR FULL NAME *
+                </label>
+                <div className="relative">
+                  <User className="w-4 h-4 text-slate-500 absolute left-3.5 top-3" />
+                  <input
+                    type="text"
+                    required
+                    placeholder="Enter your name"
+                    value={customerDetails.name}
+                    onChange={(e) => setCustomerDetails({ ...customerDetails, name: e.target.value })}
+                    className="w-full pl-10 pr-3.5 py-2.5 rounded-xl bg-[#040705] border border-tech-border text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-400"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-mono font-bold text-slate-300 mb-1">
+                  YOUR WORK / PERSONAL EMAIL *
+                </label>
+                <div className="relative">
+                  <Mail className="w-4 h-4 text-slate-500 absolute left-3.5 top-3" />
+                  <input
+                    type="email"
+                    required
+                    placeholder="yourname@gmail.com or company.com"
+                    value={customerDetails.email}
+                    onChange={(e) => setCustomerDetails({ ...customerDetails, email: e.target.value })}
+                    className="w-full pl-10 pr-3.5 py-2.5 rounded-xl bg-[#040705] border border-tech-border text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-400"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-mono font-bold text-slate-300 mb-1">
+                  WHATSAPP / PHONE NUMBER <span className="text-slate-500">(OPTIONAL)</span>
+                </label>
+                <div className="relative">
+                  <Phone className="w-4 h-4 text-slate-500 absolute left-3.5 top-3" />
+                  <input
+                    type="tel"
+                    placeholder="+91 98765 43210"
+                    value={customerDetails.phone}
+                    onChange={(e) => setCustomerDetails({ ...customerDetails, phone: e.target.value })}
+                    className="w-full pl-10 pr-3.5 py-2.5 rounded-xl bg-[#040705] border border-tech-border text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-400"
+                  />
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                className="w-full py-3.5 px-6 rounded-xl font-bold text-xs text-slate-950 bg-gradient-to-r from-emerald-400 via-mint-400 to-emerald-500 hover:from-emerald-300 hover:to-emerald-400 transition-all shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2"
+              >
+                <span>Proceed to Razorpay Payment</span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
+            </form>
+
+          </div>
+        </div>
+      )}
+
     </section>
   );
 }

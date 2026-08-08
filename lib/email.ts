@@ -7,7 +7,7 @@ const FROM_EMAIL = process.env.INFO_EMAIL || 'info@neuralautomate.dev';
 // Resend Client Setup
 const resend = resendApiKey && !resendApiKey.includes('dummy') ? new Resend(resendApiKey) : null;
 
-// SMTP Transporter Setup (Google Workspace / Zoho / Hostinger / Titan Mail)
+// SMTP Transporter Setup (Hostinger / Google Workspace / Zoho)
 const smtpHost = process.env.SMTP_HOST;
 const smtpPort = Number(process.env.SMTP_PORT || 465);
 const smtpUser = process.env.SMTP_USER;
@@ -34,6 +34,12 @@ export async function sendEmailNotification({
   subject: string;
   html: string;
 }) {
+  // Prevent sending to dummy/mock domains to avoid mail server bounce NDRs
+  if (!to || to.includes('company.dev') || to.includes('example.com')) {
+    console.log(`[EMAIL DISPATCH SKIPPED FOR DUMMY DOMAIN]: ${to}`);
+    return { success: false, skipped: true, reason: 'dummy_domain' };
+  }
+
   // Option A: Send via Resend API (Recommended)
   if (resend) {
     try {
@@ -50,7 +56,7 @@ export async function sendEmailNotification({
     }
   }
 
-  // Option B: Send via SMTP (Google Workspace / Zoho Mail)
+  // Option B: Send via Hostinger SMTP
   if (smtpTransporter) {
     try {
       const info = await smtpTransporter.sendMail({
@@ -59,7 +65,7 @@ export async function sendEmailNotification({
         subject: subject,
         html: html,
       });
-      console.log('[SMTP EMAIL DISPATCHED]:', info.messageId);
+      console.log('[SMTP EMAIL DISPATCHED SUCCESSFULLY]:', info.messageId);
       return { success: true, provider: 'smtp', messageId: info.messageId };
     } catch (error) {
       console.error('[SMTP EMAIL ERROR]:', error);
