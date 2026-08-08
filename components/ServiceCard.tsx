@@ -13,7 +13,10 @@ export interface ServiceCardProps {
 
 export default function ServiceCard({ id, icon: Icon, title, description, badge, highlights }: ServiceCardProps) {
   return (
-    <div className="tech-card rounded-2xl p-6 sm:p-8 flex flex-col justify-between group">
+    <Link
+      href={`/services/${id}`}
+      className="tech-card rounded-2xl p-6 sm:p-8 flex flex-col justify-between group cursor-pointer hover:border-emerald-500/50 hover:shadow-xl hover:shadow-emerald-500/5 transition-all duration-300 block"
+    >
       <div>
         <div className="flex items-center justify-between mb-6">
           <div className="w-11 h-11 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 group-hover:bg-emerald-400 group-hover:text-slate-950 transition-colors">
@@ -42,15 +45,10 @@ export default function ServiceCard({ id, icon: Icon, title, description, badge,
         </ul>
       </div>
 
-      <div className="pt-4 border-t border-tech-border/60">
-        <Link
-          href={`/services/${id}`}
-          className="inline-flex items-center gap-1.5 text-xs font-mono font-bold text-emerald-400 hover:text-white transition-colors"
-        >
-          <span>Learn More & Specs</span>
-          <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-        </Link>
+      <div className="pt-4 border-t border-tech-border/60 flex items-center gap-1.5 text-xs font-mono font-bold text-emerald-400 group-hover:text-white transition-colors">
+        <span>Learn More & Specs</span>
+        <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
       </div>
-    </div>
+    </Link>
   );
 }

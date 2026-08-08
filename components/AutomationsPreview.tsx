@@ -37,7 +37,7 @@ export default function AutomationsPreview() {
       highlights: ['PDF & Spreadsheet Data Extraction', 'PostgreSQL & Airtable Auto-Insert', '99.8% Extraction Accuracy']
     },
     {
-      id: 'email-responder',
+      id: 'ai-email-responder',
       icon: Mail,
       title: '24/7 AI Email Responder',
       description: 'AI agents that monitor your support inbox, parse customer inquiries, and generate contextual draft responses for instant approval.',

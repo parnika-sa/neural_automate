@@ -84,6 +84,19 @@ FILE: "invoice_9981.pdf"
 INCOMING: "How much is your Growth tier?"
 -> RAG Search -> Draft Reply: "$2,499/mo includes 6 workflows" -> Auto-Send`
   },
+  'email-responder': {
+    slug: 'email-responder',
+    title: '24/7 AI Email Responder',
+    badge: 'Inbox AI',
+    description: 'Intelligent AI email agents that monitor your support or sales inbox, parse customer intent, and auto-draft contextual replies.',
+    n8nTriggers: ['Gmail Pub/Sub Webhook', 'Outlook Graph API Trigger', 'IMAP Inbox Monitor'],
+    actions: ['Knowledge Base RAG Vector Search', 'Generate Draft Reply', 'Human Approval / Auto-Send'],
+    techStack: ['Gmail API', 'n8n Cloud', 'Pinecone Vector DB', 'OpenAI GPT-4o'],
+    roiMetric: 'Cut Response Latency from 4 hrs to 10s',
+    codeSnippet: `// Email AI Workflow
+INCOMING: "How much is your Growth tier?"
+-> RAG Search -> Draft Reply: "$2,499/mo includes 6 workflows" -> Auto-Send`
+  },
   'custom-n8n': {
     slug: 'custom-n8n',
     title: 'Custom n8n & API Webhooks',

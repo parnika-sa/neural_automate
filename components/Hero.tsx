@@ -37,18 +37,18 @@ export default function Hero() {
             </p>
 
             {/* Dual CTAs */}
-            <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-2">
+            <div className="w-full max-w-sm sm:max-w-none mx-auto lg:mx-0 flex flex-col sm:flex-row items-stretch sm:items-center justify-center lg:justify-start gap-3.5 pt-2">
               <Link
                 href="#services"
-                className="w-full sm:w-auto px-7 py-3.5 rounded-xl font-bold text-sm text-slate-950 bg-gradient-to-r from-emerald-400 via-emerald-500 to-teal-500 hover:from-emerald-300 hover:to-emerald-400 transition-all shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2"
+                className="w-full sm:w-auto px-7 py-4 sm:py-3.5 rounded-xl font-bold text-sm text-slate-950 bg-gradient-to-r from-emerald-400 via-emerald-500 to-teal-500 hover:from-emerald-300 hover:to-emerald-400 transition-all shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2 tracking-wide"
               >
                 <span>See Automations</span>
                 <ArrowRight className="w-4 h-4" />
               </Link>
 
               <Link
-                href="#contact"
-                className="w-full sm:w-auto px-7 py-3.5 rounded-xl font-bold text-sm text-slate-200 bg-tech-card border border-tech-border hover:border-emerald-500/40 hover:text-white transition-all flex items-center justify-center gap-2"
+                href="/contact"
+                className="w-full sm:w-auto px-7 py-4 sm:py-3.5 rounded-xl font-bold text-sm text-slate-200 bg-tech-card border border-tech-border hover:border-emerald-500/50 hover:text-white transition-all flex items-center justify-center gap-2 tracking-wide"
               >
                 <Sparkles className="w-4 h-4 text-emerald-400" />
                 <span>Book a Free Consultation</span>
@@ -56,10 +56,10 @@ export default function Hero() {
             </div>
 
             {/* Micro Highlights */}
-            <div className="pt-4 flex flex-wrap justify-center lg:justify-start items-center gap-6 text-xs text-slate-400 font-mono">
-              <span className="flex items-center gap-1.5"><CheckCircle2 className="w-4 h-4 text-emerald-400" /> n8n & Webhook Ready</span>
-              <span className="flex items-center gap-1.5"><CheckCircle2 className="w-4 h-4 text-emerald-400" /> Sub-10s Latency</span>
-              <span className="flex items-center gap-1.5"><CheckCircle2 className="w-4 h-4 text-emerald-400" /> 100% Custom Workflows</span>
+            <div className="pt-4 flex flex-wrap justify-center lg:justify-start items-center gap-x-6 gap-y-2 text-xs text-slate-400 font-mono">
+              <span className="flex items-center gap-1.5"><CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" /> n8n & Webhook Ready</span>
+              <span className="flex items-center gap-1.5"><CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" /> Sub-10s Latency</span>
+              <span className="flex items-center gap-1.5"><CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" /> 100% Custom Workflows</span>
             </div>
 
           </div>
