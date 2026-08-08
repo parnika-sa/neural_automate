@@ -52,7 +52,7 @@ export default function PrivacyPage() {
           <section className="space-y-2">
             <h2 className="text-lg font-bold text-white">4. Contact Us</h2>
             <p>
-              If you have any questions regarding your privacy or data protection rights, please contact our legal team at <strong className="text-emerald-400">hello@neuralautomate.dev</strong>.
+              If you have any questions regarding your privacy or data protection rights, please contact our legal team at <strong className="text-emerald-400">info@neuralautomate.dev</strong>.
             </p>
           </section>
         </div>

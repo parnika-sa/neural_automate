@@ -52,7 +52,7 @@ export default function TermsPage() {
           <section className="space-y-2">
             <h2 className="text-lg font-bold text-white">4. Contact Information</h2>
             <p>
-              For legal inquiries regarding these terms, reach us at <strong className="text-emerald-400">hello@neuralautomate.dev</strong>.
+              For legal inquiries regarding these terms, reach us at <strong className="text-emerald-400">info@neuralautomate.dev</strong>.
             </p>
           </section>
         </div>

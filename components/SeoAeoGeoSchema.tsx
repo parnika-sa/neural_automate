@@ -29,7 +29,7 @@ export default function SeoAeoGeoSchema() {
     'contactPoint': {
       '@type': 'ContactPoint',
       'contactType': 'customer support',
-      'email': 'hello@neuralautomate.dev',
+      'email': 'info@neuralautomate.dev',
       'availableLanguage': ['English', 'Hindi']
     },
     'knowsAbout': [
@@ -50,11 +50,13 @@ export default function SeoAeoGeoSchema() {
     'image': 'https://neuralautomate.dev/og-image.png',
     '@id': 'https://neuralautomate.dev/#service',
     'url': 'https://neuralautomate.dev',
-    'telephone': '+1-800-NEURAL',
+    'telephone': '+17537231090',
     'priceRange': '$$$',
     'address': {
       '@type': 'PostalAddress',
-      'addressCountry': 'US'
+      'streetAddress': 'Plot no 225, yuvis complex, halwara airport',
+      'postalCode': '141106',
+      'addressCountry': 'IN'
     },
     'hasOfferCatalog': {
       '@type': 'OfferCatalog',

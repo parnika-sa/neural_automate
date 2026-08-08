@@ -30,7 +30,7 @@ export default function FinalCTA() {
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
               <a
-                href="mailto:hello@neuralautomate.dev"
+                href="mailto:info@neuralautomate.dev"
                 className="w-full sm:w-auto px-8 py-4 rounded-xl font-bold text-sm text-slate-950 bg-gradient-to-r from-emerald-400 via-mint-400 to-emerald-500 hover:from-emerald-300 hover:to-emerald-400 transition-all shadow-xl shadow-emerald-500/20 flex items-center justify-center gap-2"
               >
                 <Cpu className="w-4 h-4" />

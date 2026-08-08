@@ -64,18 +64,22 @@ export default function Footer() {
           {/* Direct Reach */}
           <div className="space-y-3">
             <h4 className="font-display font-bold text-white text-sm tracking-wide">Direct Reach</h4>
-            <div className="space-y-2 text-xs">
+            <div className="space-y-2.5 text-xs">
               <p className="flex items-center gap-2">
                 <Mail className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                <span>hello@neuralautomate.dev</span>
+                <a href="mailto:info@neuralautomate.dev" className="hover:text-emerald-400 transition-colors">info@neuralautomate.dev</a>
               </p>
               <p className="flex items-center gap-2">
                 <Phone className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                <span>+1 (800) NEURAL-AI</span>
+                <a href="tel:+17537231090" className="hover:text-emerald-400 transition-colors">+1 7537231090 <span className="text-[10px] text-emerald-400/80 font-mono">(CA)</span></a>
               </p>
               <p className="flex items-center gap-2">
-                <MapPin className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                <span>Global Remote & n8n Ready</span>
+                <Phone className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                <a href="tel:+917268930700" className="hover:text-emerald-400 transition-colors">+91 7268930700 <span className="text-[10px] text-emerald-400/80 font-mono">(IN)</span></a>
+              </p>
+              <p className="flex items-start gap-2 pt-0.5">
+                <MapPin className="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" />
+                <span>Plot no 225, yuvis complex, halwara airport 141106</span>
               </p>
             </div>
           </div>
