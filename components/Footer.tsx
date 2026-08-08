@@ -1,16 +1,51 @@
-import React from 'react';
+'use client';
+
+import React, { useState } from 'react';
 import Link from 'next/link';
-import { Cpu, Mail, Phone, MapPin, Globe, Share2 } from 'lucide-react';
+import { Cpu, Mail, Phone, MapPin, Globe, Share2, Check } from 'lucide-react';
 
 export default function Footer() {
+  const [copied, setCopied] = useState(false);
+
+  const handleShare = async () => {
+    const shareData = {
+      title: 'NeuralAutomate.dev - AI Business Automation Agency',
+      text: 'Automate your business processes with custom n8n & AI workflows.',
+      url: typeof window !== 'undefined' ? window.location.origin : 'https://neuralautomate.dev',
+    };
+
+    if (typeof navigator !== 'undefined' && navigator.share) {
+      try {
+        await navigator.share(shareData);
+      } catch (err) {
+        // User cancelled share dialog
+      }
+    } else if (typeof navigator !== 'undefined' && navigator.clipboard) {
+      try {
+        await navigator.clipboard.writeText(window.location.origin);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2500);
+      } catch (err) {
+        // Fallback
+      }
+    }
+  };
+
+  const handleGlobeClick = () => {
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
   return (
     <footer className="bg-[#020503] border-t border-tech-border pt-16 pb-12 relative overflow-hidden text-slate-400">
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 pb-12 border-b border-tech-border/60">
+        {/* Grid layout: 2 columns on mobile so Automations & Navigation sit side-by-side */}
+        <div className="grid grid-cols-2 lg:grid-cols-5 gap-8 sm:gap-10 pb-12 border-b border-tech-border/60">
           
-          {/* Brand Column */}
-          <div className="lg:col-span-2 space-y-4">
+          {/* Brand Column (Full width 2 cols on mobile) */}
+          <div className="col-span-2 lg:col-span-2 space-y-4">
             <Link href="/" className="flex items-center gap-2.5">
               <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-400 to-emerald-600 p-[1px]">
                 <div className="w-full h-full bg-[#040705] rounded-[7px] flex items-center justify-center">
@@ -27,17 +62,33 @@ export default function Footer() {
             </p>
 
             <div className="flex items-center gap-3 pt-2">
-              <span className="w-8 h-8 rounded-lg bg-tech-card border border-tech-border flex items-center justify-center text-slate-400 hover:text-emerald-400 cursor-pointer transition-colors">
+              <button
+                type="button"
+                onClick={handleGlobeClick}
+                title="Scroll to Top"
+                className="w-9 h-9 rounded-lg bg-tech-card border border-tech-border flex items-center justify-center text-slate-400 hover:text-emerald-400 hover:border-emerald-500/40 transition-all cursor-pointer"
+              >
                 <Globe className="w-4 h-4" />
-              </span>
-              <span className="w-8 h-8 rounded-lg bg-tech-card border border-tech-border flex items-center justify-center text-slate-400 hover:text-emerald-400 cursor-pointer transition-colors">
-                <Share2 className="w-4 h-4" />
-              </span>
+              </button>
+
+              <button
+                type="button"
+                onClick={handleShare}
+                title="Share Website Link"
+                className="w-9 h-9 rounded-lg bg-tech-card border border-tech-border flex items-center justify-center text-slate-400 hover:text-emerald-400 hover:border-emerald-500/40 transition-all cursor-pointer relative"
+              >
+                {copied ? <Check className="w-4 h-4 text-emerald-400" /> : <Share2 className="w-4 h-4" />}
+                {copied && (
+                  <span className="absolute -top-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-emerald-500 text-slate-950 font-mono font-bold text-[10px] rounded shadow-lg whitespace-nowrap">
+                    Link Copied!
+                  </span>
+                )}
+              </button>
             </div>
           </div>
 
-          {/* Automations Links */}
-          <div className="space-y-3">
+          {/* Automations Links (Left column on mobile) */}
+          <div className="col-span-1 space-y-3">
             <h4 className="font-display font-bold text-white text-sm tracking-wide">Automations</h4>
             <ul className="space-y-2 text-xs">
               <li><Link href="/services/whatsapp-bot" className="hover:text-emerald-400 transition-colors">WhatsApp AI Chatbots</Link></li>
@@ -48,8 +99,8 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Navigation Links */}
-          <div className="space-y-3">
+          {/* Navigation Links (Right column on mobile - side-by-side with Automations) */}
+          <div className="col-span-1 space-y-3">
             <h4 className="font-display font-bold text-white text-sm tracking-wide">Navigation</h4>
             <ul className="space-y-2 text-xs">
               <li><Link href="/how-it-works" className="hover:text-emerald-400 transition-colors">How It Works</Link></li>
@@ -61,8 +112,8 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Direct Reach */}
-          <div className="space-y-3">
+          {/* Direct Reach (Full width on mobile below the two columns) */}
+          <div className="col-span-2 lg:col-span-1 space-y-3">
             <h4 className="font-display font-bold text-white text-sm tracking-wide">Direct Reach</h4>
             <div className="space-y-2.5 text-xs">
               <p className="flex items-center gap-2">
