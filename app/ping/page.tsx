@@ -114,33 +114,33 @@ export default function StatusControlPage() {
   };
 
   return (
-    <div className="min-h-[85vh] py-12 px-4 max-w-xl mx-auto flex flex-col justify-center">
-      <div className="bg-slate-900/90 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl backdrop-blur-xl space-y-6">
+    <div className="min-h-[85vh] py-6 sm:py-12 px-3 sm:px-4 max-w-xl mx-auto flex flex-col justify-center">
+      <div className="bg-slate-900/90 border border-slate-800 rounded-2xl sm:rounded-3xl p-4 sm:p-8 shadow-2xl backdrop-blur-xl space-y-5 sm:space-y-6">
         
         {/* Header */}
         <div className="text-center space-y-2 pb-4 border-b border-slate-800">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 text-cyan-400 text-xs font-semibold border border-cyan-500/20 font-mono">
-            <Activity className="w-3.5 h-3.5 text-cyan-400" />
+            <Activity className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
             <span>System Operational Controller</span>
           </div>
-          <h1 className="text-2xl font-bold text-white">
+          <h1 className="text-xl sm:text-2xl font-extrabold text-white">
             Update Status Notice
           </h1>
-          <p className="text-xs text-slate-400">
+          <p className="text-xs text-slate-400 max-w-xs sm:max-w-none mx-auto">
             Select or enter a status update below. Resets automatically at 12:00 AM Midnight IST.
           </p>
         </div>
 
         {/* Current Status Box */}
         {currentStatus && (
-          <div className="bg-slate-950/80 border border-slate-800 rounded-2xl p-4 space-y-1">
+          <div className="bg-slate-950/80 border border-slate-800 rounded-xl sm:rounded-2xl p-3.5 sm:p-4 space-y-1">
             <div className="flex items-center justify-between text-xs text-slate-400 font-mono">
               <span className="flex items-center gap-1 text-cyan-400">
-                <Clock className="w-3.5 h-3.5" /> Current Live Notice:
+                <Clock className="w-3.5 h-3.5 shrink-0" /> Current Live Notice:
               </span>
               <span>{currentStatus.formattedTime}</span>
             </div>
-            <p className="text-base font-semibold text-white">
+            <p className="text-sm sm:text-base font-semibold text-white break-words">
               "{currentStatus.message}"
             </p>
           </div>
@@ -149,15 +149,15 @@ export default function StatusControlPage() {
         {/* Presets */}
         <div className="space-y-2">
           <label className="text-xs font-semibold uppercase tracking-wider text-slate-400 flex items-center gap-1.5 font-mono">
-            <Zap className="w-3.5 h-3.5 text-amber-400" /> Quick Status Presets:
+            <Zap className="w-3.5 h-3.5 text-amber-400 shrink-0" /> Quick Status Presets:
           </label>
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
             {QUICK_PRESETS.map((p) => (
               <button
                 key={p.id}
                 type="button"
                 onClick={() => handlePresetSelect(p.message, p.level)}
-                className={`p-3 rounded-xl border text-center text-xs font-semibold transition-all ${
+                className={`p-3 rounded-xl border text-center text-xs font-semibold transition-all min-h-[44px] ${
                   message === p.message
                     ? 'bg-cyan-500/20 border-cyan-400 text-cyan-200 ring-1 ring-cyan-400'
                     : 'bg-slate-800/60 border-slate-700/60 text-slate-300 hover:bg-slate-800'
@@ -182,14 +182,14 @@ export default function StatusControlPage() {
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               placeholder="e.g. Take break"
-              className="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyan-500"
+              className="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyan-500 min-h-[44px]"
             />
           </div>
 
           {/* Passcode PIN - Mandatory every submission */}
-          <div className="space-y-1">
+          <div className="space-y-1.5">
             <label className="text-xs font-semibold text-slate-300 flex items-center gap-1 font-mono">
-              <Lock className="w-3.5 h-3.5 text-amber-400" /> Enter Passcode PIN (Required):
+              <Lock className="w-3.5 h-3.5 text-amber-400 shrink-0" /> Enter Passcode PIN (Required):
             </label>
             <input
               type="password"
@@ -197,7 +197,7 @@ export default function StatusControlPage() {
               onChange={(e) => setPin(e.target.value)}
               placeholder="Enter PIN (e.g. 9322)"
               required
-              className="w-full max-w-[180px] bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyan-500 font-mono tracking-widest"
+              className="w-full sm:w-48 bg-slate-950 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyan-500 font-mono tracking-widest min-h-[44px]"
             />
           </div>
 
@@ -213,7 +213,7 @@ export default function StatusControlPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3 px-4 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-semibold text-sm shadow-lg shadow-cyan-500/20 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+            className="w-full py-3.5 px-4 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-semibold text-sm shadow-lg shadow-cyan-500/20 transition-all flex items-center justify-center gap-2 disabled:opacity-50 min-h-[44px]"
           >
             {loading ? (
               <span>Updating status...</span>
