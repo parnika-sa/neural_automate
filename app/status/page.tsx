@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { getSystemStatus } from '@/lib/gf-status';
+import { getSystemStatusAsync } from '@/lib/gf-status';
 import Link from 'next/link';
 import { Activity, Clock, Server, CheckCircle2, AlertTriangle, Info, RefreshCw } from 'lucide-react';
 
@@ -7,7 +7,7 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 export async function generateMetadata(): Promise<Metadata> {
-  const status = getSystemStatus();
+  const status = await getSystemStatusAsync();
   return {
     title: `System Status: ${status.message} (${status.formattedTime}) - NeuralAutomate`,
     description: `Current NeuralAutomate service status notice: "${status.message}". Updated at ${status.formattedTime}.`,
@@ -22,8 +22,8 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default function StatusPage() {
-  const status = getSystemStatus();
+export default async function StatusPage() {
+  const status = await getSystemStatusAsync();
 
   const isUrgent = status.level === 'urgent';
   const isImportant = status.level === 'important';

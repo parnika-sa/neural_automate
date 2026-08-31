@@ -1,11 +1,11 @@
 import { NextResponse } from 'next/server';
-import { getSystemStatus } from '@/lib/gf-status';
+import { getSystemStatusAsync } from '@/lib/gf-status';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 export async function GET() {
-  const status = getSystemStatus();
+  const status = await getSystemStatusAsync();
   
   const textOutput = `NeuralAutomate Infrastructure & Service Status
 ----------------------------------------------
@@ -19,7 +19,9 @@ Service Health: ${status.level === 'normal' ? 'All Operational' : 'Notice Pendin
   return new NextResponse(textOutput, {
     headers: {
       'Content-Type': 'text/plain; charset=utf-8',
-      'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+      'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0',
+      'Pragma': 'no-cache',
+      'Expires': '0',
     },
   });
 }

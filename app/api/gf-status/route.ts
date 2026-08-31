@@ -1,11 +1,11 @@
 import { NextResponse } from 'next/server';
-import { getSystemStatus, updateSystemStatus, verifyPIN } from '@/lib/gf-status';
+import { getSystemStatusAsync, updateSystemStatusAsync, verifyPIN } from '@/lib/gf-status';
 import { checkRateLimit } from '@/lib/rate-limit';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
-  const status = getSystemStatus();
+  const status = await getSystemStatusAsync();
   return NextResponse.json({ success: true, status });
 }
 
@@ -39,7 +39,7 @@ export async function POST(request: Request) {
     }
 
     const validLevel = ['normal', 'important', 'urgent'].includes(level) ? level : 'normal';
-    const updatedStatus = updateSystemStatus(message, validLevel);
+    const updatedStatus = await updateSystemStatusAsync(message, validLevel);
 
     return NextResponse.json({
       success: true,
