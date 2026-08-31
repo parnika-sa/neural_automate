@@ -111,7 +111,7 @@ export default function StatusControlPage() {
   };
 
   return (
-    <div className="min-h-[85vh] py-6 sm:py-12 px-3 sm:px-4 w-full max-w-xl mx-auto flex flex-col justify-center items-center">
+    <div className="min-h-[85vh] pt-24 pb-10 sm:pt-28 sm:pb-16 px-3 sm:px-4 w-full max-w-xl mx-auto flex flex-col justify-center items-center">
       <div className="w-full bg-slate-900/90 border border-slate-800 rounded-2xl sm:rounded-3xl p-4 sm:p-7 shadow-2xl backdrop-blur-xl space-y-5 sm:space-y-6 overflow-hidden">
         
         {/* Header */}
@@ -194,7 +194,7 @@ export default function StatusControlPage() {
               pattern="[0-9]*"
               value={pin}
               onChange={(e) => setPin(e.target.value)}
-              placeholder="e.g. 9322"
+              placeholder="XXXX"
               required
               className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-3 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyan-500 font-mono tracking-widest min-h-[44px]"
             />

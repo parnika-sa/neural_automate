@@ -35,7 +35,7 @@ export default async function StatusPage() {
   };
 
   return (
-    <div className="min-h-[85vh] py-8 sm:py-16 px-3 sm:px-4 max-w-4xl mx-auto flex flex-col justify-center items-center">
+    <div className="min-h-[85vh] pt-24 pb-10 sm:pt-28 sm:pb-16 px-3 sm:px-4 max-w-4xl mx-auto flex flex-col justify-center items-center">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
