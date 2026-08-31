@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 
-export interface GFStatus {
+export interface SystemStatus {
   message: string;
   level: 'normal' | 'important' | 'urgent';
   timestamp: string;
@@ -9,8 +9,8 @@ export interface GFStatus {
   updatedBy: string;
 }
 
-const DEFAULT_STATUS: GFStatus = {
-  message: "No new updates right now. All good! ❤️",
+const DEFAULT_STATUS: SystemStatus = {
+  message: "All Systems Operational",
   level: "normal",
   timestamp: new Date().toISOString(),
   formattedTime: new Date().toLocaleTimeString('en-US', {
@@ -18,39 +18,66 @@ const DEFAULT_STATUS: GFStatus = {
     minute: '2-digit',
     hour12: true,
     timeZone: 'Asia/Kolkata'
-  }),
+  }) + ' IST',
   updatedBy: "System"
 };
 
-// Memory fallback
-let inMemoryStatus: GFStatus = { ...DEFAULT_STATUS };
+let inMemoryStatus: SystemStatus = { ...DEFAULT_STATUS };
 
 function getFilePath(): string {
-  // Use /tmp in serverless environment or local data directory
   if (process.env.NODE_ENV === 'production' && process.env.VERCEL) {
-    return path.join('/tmp', 'gf-status.json');
+    return path.join('/tmp', 'system-status.json');
   }
-  return path.join(process.cwd(), 'data', 'gf-status.json');
+  return path.join(process.cwd(), 'data', 'system-status.json');
 }
 
-export function getGFStatus(): GFStatus {
+/**
+ * Checks if the recorded status timestamp is from a previous date in India (IST).
+ * If it's a new day (past 12:00 AM Midnight IST), return true.
+ */
+function isPastMidnightIST(timestampISO: string): boolean {
+  try {
+    const now = new Date();
+    const todayIST = now.toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
+
+    const statusDate = new Date(timestampISO);
+    const statusIST = statusDate.toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
+
+    return todayIST !== statusIST;
+  } catch (e) {
+    return false;
+  }
+}
+
+export function getSystemStatus(): SystemStatus {
   try {
     const filePath = getFilePath();
+    let current: SystemStatus | null = null;
+
     if (fs.existsSync(filePath)) {
       const data = fs.readFileSync(filePath, 'utf-8');
-      return JSON.parse(data) as GFStatus;
+      current = JSON.parse(data) as SystemStatus;
+    } else {
+      current = inMemoryStatus;
     }
+
+    // Auto-reset if midnight IST has passed since last update
+    if (current && current.timestamp && isPastMidnightIST(current.timestamp)) {
+      return resetSystemStatus();
+    }
+
+    return current || DEFAULT_STATUS;
   } catch (error) {
-    console.error("Error reading GF status file:", error);
+    console.error("Error reading system status:", error);
   }
   return inMemoryStatus;
 }
 
-export function updateGFStatus(
+export function updateSystemStatus(
   message: string,
   level: 'normal' | 'important' | 'urgent' = 'normal',
-  updatedBy: string = 'GF'
-): GFStatus {
+  updatedBy: string = 'Operator'
+): SystemStatus {
   const now = new Date();
   const formattedTime = now.toLocaleTimeString('en-US', {
     hour: '2-digit',
@@ -59,7 +86,7 @@ export function updateGFStatus(
     timeZone: 'Asia/Kolkata'
   }) + ' IST';
 
-  const newStatus: GFStatus = {
+  const newStatus: SystemStatus = {
     message: message.trim(),
     level,
     timestamp: now.toISOString(),
@@ -77,13 +104,17 @@ export function updateGFStatus(
     }
     fs.writeFileSync(filePath, JSON.stringify(newStatus, null, 2), 'utf-8');
   } catch (error) {
-    console.error("Error writing GF status file:", error);
+    console.error("Error writing system status file:", error);
   }
 
   return newStatus;
 }
 
+export function resetSystemStatus(): SystemStatus {
+  return updateSystemStatus("All Systems Operational", "normal", "System Auto-Reset");
+}
+
 export function verifyPIN(pin: string): boolean {
-  const correctPIN = process.env.GF_PIN || '1234';
+  const correctPIN = process.env.STATUS_PIN || '1234';
   return pin === correctPIN;
 }

@@ -1,11 +1,11 @@
 import { NextResponse } from 'next/server';
-import { getGFStatus, updateGFStatus, verifyPIN } from '@/lib/gf-status';
+import { getSystemStatus, updateSystemStatus, verifyPIN } from '@/lib/gf-status';
 import { checkRateLimit } from '@/lib/rate-limit';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
-  const status = getGFStatus();
+  const status = getSystemStatus();
   return NextResponse.json({ success: true, status });
 }
 
@@ -26,24 +26,24 @@ export async function POST(request: Request) {
 
     if (!pin || !verifyPIN(String(pin))) {
       return NextResponse.json(
-        { error: 'Incorrect PIN. Please enter the valid PIN.' },
+        { error: 'Invalid Passcode. Please enter valid 4-digit PIN.' },
         { status: 401 }
       );
     }
 
     if (!message || typeof message !== 'string' || !message.trim()) {
       return NextResponse.json(
-        { error: 'Message cannot be empty.' },
+        { error: 'Message payload cannot be empty.' },
         { status: 400 }
       );
     }
 
     const validLevel = ['normal', 'important', 'urgent'].includes(level) ? level : 'normal';
-    const updatedStatus = updateGFStatus(message, validLevel);
+    const updatedStatus = updateSystemStatus(message, validLevel);
 
     return NextResponse.json({
       success: true,
-      message: 'Status updated successfully!',
+      message: 'System status updated!',
       status: updatedStatus
     });
   } catch (error) {

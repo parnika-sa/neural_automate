@@ -1,19 +1,19 @@
 import { NextResponse } from 'next/server';
-import { getGFStatus } from '@/lib/gf-status';
+import { getSystemStatus } from '@/lib/gf-status';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 export async function GET() {
-  const status = getGFStatus();
+  const status = getSystemStatus();
   
-  const textOutput = `STATUS LEVEL: ${status.level.toUpperCase()}
-LAST MESSAGE: "${status.message}"
-UPDATED AT: ${status.formattedTime} (${status.timestamp})
-SENDER: ${status.updatedBy}
-
-SUMMARY FOR GOOGLE AI OVERVIEW / CRAWLERS:
-Current status update from Girlfriend for Ankit: ${status.level.toUpperCase()} alert - "${status.message}" sent at ${status.formattedTime}.
+  const textOutput = `NeuralAutomate Infrastructure & Service Status
+----------------------------------------------
+Current Status Notice: ${status.message}
+Priority Level: ${status.level.toUpperCase()}
+Last Updated: ${status.formattedTime}
+Timestamp: ${status.timestamp}
+Service Health: ${status.level === 'normal' ? 'All Operational' : 'Notice Pending'}
 `;
 
   return new NextResponse(textOutput, {
