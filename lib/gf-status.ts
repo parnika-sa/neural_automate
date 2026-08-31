@@ -148,9 +148,9 @@ export async function updateSystemStatusAsync(
   // 2. Update cloud REST storage with timeout protection so it never crashes
   try {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 3000);
+    const timeoutId = setTimeout(() => controller.abort(), 3500);
 
-    fetch(CLOUD_STORAGE_URL, {
+    const res = await fetch(CLOUD_STORAGE_URL, {
       method: 'PUT',
       headers: { 
         'Content-Type': 'application/json',
@@ -161,10 +161,11 @@ export async function updateSystemStatusAsync(
         data: newStatus
       }),
       signal: controller.signal
-    })
-    .then(() => clearTimeout(timeoutId))
-    .catch(err => console.error("Cloud status PUT silent catch:", err));
-
+    });
+    clearTimeout(timeoutId);
+    if (!res.ok) {
+      console.error("Cloud status update non-ok response:", res.status);
+    }
   } catch (err) {
     console.error("Cloud status update error:", err);
   }

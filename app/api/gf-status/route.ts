@@ -3,10 +3,17 @@ import { getSystemStatusAsync, updateSystemStatusAsync, verifyPIN } from '@/lib/
 import { checkRateLimit } from '@/lib/rate-limit';
 
 export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
+const noCacheHeaders = {
+  'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0',
+  'Pragma': 'no-cache',
+  'Expires': '0',
+};
 
 export async function GET() {
   const status = await getSystemStatusAsync();
-  return NextResponse.json({ success: true, status });
+  return NextResponse.json({ success: true, status }, { headers: noCacheHeaders });
 }
 
 export async function POST(request: Request) {
@@ -17,7 +24,7 @@ export async function POST(request: Request) {
     if (!rateLimit.success) {
       return NextResponse.json(
         { error: 'Too many requests. Please wait a minute.' },
-        { status: 429 }
+        { status: 429, headers: noCacheHeaders }
       );
     }
 
@@ -27,14 +34,14 @@ export async function POST(request: Request) {
     if (!pin || !verifyPIN(String(pin))) {
       return NextResponse.json(
         { error: 'Invalid Passcode. Please enter valid 4-digit PIN.' },
-        { status: 401 }
+        { status: 401, headers: noCacheHeaders }
       );
     }
 
     if (!message || typeof message !== 'string' || !message.trim()) {
       return NextResponse.json(
         { error: 'Message payload cannot be empty.' },
-        { status: 400 }
+        { status: 400, headers: noCacheHeaders }
       );
     }
 
@@ -45,12 +52,12 @@ export async function POST(request: Request) {
       success: true,
       message: 'System status updated!',
       status: updatedStatus
-    });
+    }, { headers: noCacheHeaders });
   } catch (error) {
     console.error('Error updating status API:', error);
     return NextResponse.json(
       { error: 'Internal Server Error' },
-      { status: 500 }
+      { status: 500, headers: noCacheHeaders }
     );
   }
 }
