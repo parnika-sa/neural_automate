@@ -1,8 +1,9 @@
 import React from 'react';
 import Link from 'next/link';
-import { posts, BlogPost } from '@/lib/posts';
-import { ArrowLeft, Clock, Tag, Share2, Bot, Sparkles, CheckCircle2, BookOpen } from 'lucide-react';
+import { posts } from '@/lib/posts';
+import { ArrowLeft, Clock, Bot } from 'lucide-react';
 import { notFound } from 'next/navigation';
+import ReactMarkdown from 'react-markdown';
 
 export async function generateStaticParams() {
   return posts.map((p) => ({
@@ -48,7 +49,7 @@ export default function BlogPostDetail({ params }: { params: { slug: string } })
         'url': 'https://neuralautomate.dev/logo.png'
       }
     },
-    'datePublished': '2026-08-01',
+    'datePublished': post.date,
     'mainEntityOfPage': `https://neuralautomate.dev/blog/${post.slug}`
   };
 
@@ -96,45 +97,26 @@ export default function BlogPostDetail({ params }: { params: { slug: string } })
         </div>
 
         {/* Article Body Content */}
-        <div className="tech-card rounded-2xl p-6 sm:p-10 border border-tech-border space-y-6 text-slate-300 text-base leading-relaxed">
-          <p className="text-lg text-white font-medium">
-            {post.excerpt}
-          </p>
-
-          <h2 className="text-2xl font-display font-bold text-white pt-4 border-t border-tech-border">
-            1. Why Answer Engine Optimization (AEO) Matters in 2026
-          </h2>
-          <p>
-            With search queries shifting rapidly to ChatGPT, Perplexity AI, Claude, and Google AI Overviews, traditional keyword stuffing is obsolete. Modern search engines index entities, direct factual summaries, and JSON-LD schema structures.
-          </p>
-
-          <h2 className="text-2xl font-display font-bold text-white pt-4 border-t border-tech-border">
-            2. Core Pillars of A-Z Web & AI Systems
-          </h2>
-          <p>
-            To achieve high conversion rates and search dominance, your digital platform requires:
-          </p>
-          <ul className="space-y-2 pl-4 text-sm text-slate-300">
-            <li className="flex items-start gap-2">
-              <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-1" />
-              <span><strong>Next.js 14 App Router:</strong> Server-Side Rendering (SSR) for sub-second crawl speed.</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-1" />
-              <span><strong>Autonomous AI Agents:</strong> 24/7 lead qualification via OpenAI/Claude API.</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-1" />
-              <span><strong>Structured Schema:</strong> JSON-LD schema markup for Organization, Service, and FAQPage.</span>
-            </li>
-          </ul>
-
-          <h2 className="text-2xl font-display font-bold text-white pt-4 border-t border-tech-border">
-            3. Actionable Next Steps
-          </h2>
-          <p>
-            Whether upgrading an existing platform or building from scratch on <strong className="text-white">neuralautomate.dev</strong>, incorporating automated AI workflows guarantees operational efficiency and revenue growth.
-          </p>
+        <div className="tech-card rounded-2xl p-6 sm:p-10 border border-tech-border text-slate-300 text-base leading-relaxed">
+          <ReactMarkdown
+            components={{
+              h1: ({ ...props }) => <h1 className="text-3xl font-display font-extrabold text-white mt-8 mb-4 border-b border-tech-border pb-2" {...props} />,
+              h2: ({ ...props }) => <h2 className="text-2xl font-display font-bold text-white mt-8 mb-4 border-b border-tech-border pb-2" {...props} />,
+              h3: ({ ...props }) => <h3 className="text-xl font-display font-semibold text-emerald-400 mt-6 mb-3" {...props} />,
+              p: ({ ...props }) => <p className="text-slate-300 text-base leading-relaxed mb-4" {...props} />,
+              ul: ({ ...props }) => <ul className="space-y-2 pl-6 list-disc text-slate-300 text-base mb-6" {...props} />,
+              ol: ({ ...props }) => <ol className="space-y-2 pl-6 list-decimal text-slate-300 text-base mb-6" {...props} />,
+              li: ({ ...props }) => <li className="text-slate-300" {...props} />,
+              strong: ({ ...props }) => <strong className="text-white font-semibold" {...props} />,
+              code: ({ ...props }) => <code className="bg-slate-900 text-emerald-400 font-mono text-xs px-2 py-0.5 rounded border border-emerald-500/30" {...props} />,
+              blockquote: ({ ...props }) => <blockquote className="border-l-4 border-emerald-500 pl-4 py-2 my-4 italic text-slate-400 bg-emerald-500/5 rounded-r" {...props} />,
+              table: ({ ...props }) => <div className="overflow-x-auto my-6"><table className="w-full text-left text-sm border-collapse border border-tech-border" {...props} /></div>,
+              th: ({ ...props }) => <th className="bg-slate-900/80 p-3 border border-tech-border text-emerald-400 font-mono font-bold" {...props} />,
+              td: ({ ...props }) => <td className="p-3 border border-tech-border text-slate-300" {...props} />,
+            }}
+          >
+            {post.content}
+          </ReactMarkdown>
 
           {/* Article Footer CTA */}
           <div className="mt-8 p-6 rounded-xl bg-[#040705] border border-emerald-500/30 flex flex-col sm:flex-row items-center justify-between gap-4">

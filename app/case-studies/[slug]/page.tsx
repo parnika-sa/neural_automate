@@ -24,8 +24,37 @@ export default function CaseStudyDetail({ params }: { params: { slug: string } }
   const item = detailedCases.find((c) => c.slug === params.slug);
   if (!item) return notFound();
 
+  const caseStudySchema = {
+    '@context': 'https://schema.org',
+    '@type': 'TechArticle',
+    'headline': item.title,
+    'description': item.summary,
+    'author': {
+      '@type': 'Organization',
+      'name': 'NeuralAutomate',
+      'url': 'https://neuralautomate.dev'
+    },
+    'publisher': {
+      '@type': 'Organization',
+      'name': 'NeuralAutomate',
+      'logo': {
+        '@type': 'ImageObject',
+        'url': 'https://neuralautomate.dev/logo.png'
+      }
+    },
+    'about': {
+      '@type': 'Organization',
+      'name': item.client
+    },
+    'mainEntityOfPage': `https://neuralautomate.dev/case-studies/${item.slug}`
+  };
+
   return (
     <article className="pt-28 pb-20 text-white relative">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(caseStudySchema) }}
+      />
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
         
         {/* Back Link */}

@@ -84,19 +84,6 @@ FILE: "invoice_9981.pdf"
 INCOMING: "How much is your Growth tier?"
 -> RAG Search -> Draft Reply: "$2,499/mo includes 6 workflows" -> Auto-Send`
   },
-  'email-responder': {
-    slug: 'email-responder',
-    title: '24/7 AI Email Responder',
-    badge: 'Inbox AI',
-    description: 'Intelligent AI email agents that monitor your support or sales inbox, parse customer intent, and auto-draft contextual replies.',
-    n8nTriggers: ['Gmail Pub/Sub Webhook', 'Outlook Graph API Trigger', 'IMAP Inbox Monitor'],
-    actions: ['Knowledge Base RAG Vector Search', 'Generate Draft Reply', 'Human Approval / Auto-Send'],
-    techStack: ['Gmail API', 'n8n Cloud', 'Pinecone Vector DB', 'OpenAI GPT-4o'],
-    roiMetric: 'Cut Response Latency from 4 hrs to 10s',
-    codeSnippet: `// Email AI Workflow
-INCOMING: "How much is your Growth tier?"
--> RAG Search -> Draft Reply: "$2,499/mo includes 6 workflows" -> Auto-Send`
-  },
   'custom-n8n': {
     slug: 'custom-n8n',
     title: 'Custom n8n & API Webhooks',
@@ -130,8 +117,28 @@ export default function ServiceDetailPage({ params }: { params: { slug: string }
   const detail = automationsData[params.slug];
   if (!detail) return notFound();
 
+  const serviceSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    'name': detail.title,
+    'description': detail.description,
+    'provider': {
+      '@type': 'Organization',
+      'name': 'NeuralAutomate',
+      'url': 'https://neuralautomate.dev',
+      'logo': 'https://neuralautomate.dev/logo.png'
+    },
+    'areaServed': 'Global',
+    'serviceType': detail.badge,
+    'url': `https://neuralautomate.dev/services/${detail.slug}`
+  };
+
   return (
     <article className="pt-28 pb-20 text-white relative">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }}
+      />
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
         
         {/* Back Link */}

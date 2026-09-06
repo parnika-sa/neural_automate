@@ -18,9 +18,10 @@ export default function SeoAeoGeoSchema() {
     '@context': 'https://schema.org',
     '@type': 'Organization',
     '@id': 'https://neuralautomate.dev/#organization',
-    'name': 'NeuralAutomate.dev',
+    'name': 'NeuralAutomate',
     'url': 'https://neuralautomate.dev',
     'logo': 'https://neuralautomate.dev/logo.png',
+    'description': 'AI automation agency offering n8n workflows, WhatsApp chatbots, CRM sync, invoice automation, and custom integrations',
     'sameAs': [
       'https://twitter.com/neuralautomate',
       'https://linkedin.com/company/neuralautomate',

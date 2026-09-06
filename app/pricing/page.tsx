@@ -31,8 +31,25 @@ export default function PricingPage() {
     }
   ];
 
+  const faqSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    'mainEntity': faqs.map((faq) => ({
+      '@type': 'Question',
+      'name': faq.q,
+      'acceptedAnswer': {
+        '@type': 'Answer',
+        'text': faq.a
+      }
+    }))
+  };
+
   return (
     <div className="pt-28 pb-16 space-y-16 text-white">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
       
       {/* Header */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-4">
