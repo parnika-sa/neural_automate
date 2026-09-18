@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Script from 'next/script';
 import { useSearchParams } from 'next/navigation';
 import PricingCard from './PricingCard';
-import { ShieldCheck, CheckCircle2, AlertCircle, Lock, X, User, Mail, Phone, ArrowRight } from 'lucide-react';
+import { ShieldCheck, CheckCircle2, AlertCircle, Lock, X, User, Mail, Phone, ArrowRight, Globe, MessageSquare } from 'lucide-react';
 import { trackEvent } from '@/lib/analytics';
 
 export default function PricingPreview() {
@@ -190,6 +190,24 @@ export default function PricingPreview() {
           <p className="text-slate-400 text-sm sm:text-base">
             Instant online enrollment powered securely by Razorpay.
           </p>
+
+          {/* International Lead Capture Banner */}
+          <div className="mt-4 pt-4 border-t border-tech-border/50 max-w-xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-xs bg-emerald-950/20 border border-emerald-500/20 p-3.5 sm:p-4 rounded-xl">
+            <div className="flex items-center gap-2 text-slate-300 text-center sm:text-left">
+              <Globe className="w-4 h-4 text-emerald-400 shrink-0" />
+              <span>Outside India? We offer USD/EUR invoicing & custom onboarding.</span>
+            </div>
+            <a
+              href="https://wa.me/+17537231090?text=Hi%2C%20I%27m%20an%20international%20client%20interested%20in%20your%20automation%20services"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => trackEvent('international_cta_clicked', { channel: 'whatsapp' })}
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-emerald-400 border border-emerald-500/40 hover:border-emerald-400 hover:bg-emerald-500/10 hover:text-emerald-300 transition-all shrink-0 shadow-sm"
+            >
+              <MessageSquare className="w-3.5 h-3.5" />
+              <span>International Client? Talk to Us</span>
+            </a>
+          </div>
         </div>
 
         {/* Notifications */}
