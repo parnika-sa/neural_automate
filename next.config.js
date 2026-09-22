@@ -1,8 +1,15 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  swcMinify: true,
+  compress: true,
+  optimizeFonts: true,
+  experimental: {
+    optimizeCss: true,
+  },
   images: {
     domains: ['images.unsplash.com', 'raw.githubusercontent.com'],
+    formats: ['image/avif', 'image/webp'],
   },
   async headers() {
     return [

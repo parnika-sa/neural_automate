@@ -34,6 +34,12 @@ export const metadata: Metadata = {
   authors: [{ name: "NeuralAutomate.dev Team" }],
   creator: "NeuralAutomate.dev",
   metadataBase: new URL("https://neuralautomate.dev"),
+  icons: {
+    icon: [
+      { url: "/icon.png", type: "image/png" },
+    ],
+    apple: "/icon.png",
+  },
   openGraph: {
     title: "NeuralAutomate.dev | AI Automation Agency",
     description: "Automate repetitive business tasks with custom n8n workflows and AI agents.",
@@ -41,6 +47,20 @@ export const metadata: Metadata = {
     siteName: "NeuralAutomate.dev",
     locale: "en_US",
     type: "website",
+    images: [
+      {
+        url: "/opengraph-image.png",
+        width: 1200,
+        height: 630,
+        alt: "NeuralAutomate.dev - Automate Once. Scale Forever",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "NeuralAutomate.dev | AI Automation Agency",
+    description: "Automate repetitive business tasks with custom n8n workflows and AI agents.",
+    images: ["/opengraph-image.png"],
   },
 };
 
@@ -52,10 +72,14 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${outfit.variable} dark`}>
       <head>
+        <link rel="preconnect" href="https://www.googletagmanager.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+        <link rel="preconnect" href="https://images.unsplash.com" />
+        <link rel="dns-prefetch" href="https://images.unsplash.com" />
         <SeoAeoGeoSchema />
         <Script
           id="gtm-script"
-          strategy="afterInteractive"
+          strategy="lazyOnload"
           dangerouslySetInnerHTML={{
             __html: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],

@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Cpu, Menu, X, ArrowRight } from 'lucide-react';
+import Image from 'next/image';
+import { Menu, X, ArrowRight } from 'lucide-react';
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -27,10 +28,15 @@ export default function Navbar() {
           
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2.5 group">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-400 to-emerald-600 p-[1px]">
-              <div className="w-full h-full bg-[#040705] rounded-[7px] flex items-center justify-center">
-                <Cpu className="w-4 h-4 text-emerald-400 group-hover:rotate-45 transition-transform duration-300" />
-              </div>
+            <div className="relative w-9 h-9 rounded-lg overflow-hidden border border-emerald-500/30 group-hover:border-emerald-400/80 transition-all shadow-md shadow-emerald-500/10 shrink-0">
+              <Image
+                src="/logo.png"
+                alt="NeuralAutomate Logo"
+                width={36}
+                height={36}
+                className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
+                priority
+              />
             </div>
             <span className="font-display font-black text-xl tracking-tight text-white">
               Neural<span className="gradient-text-electric">Automate</span>
