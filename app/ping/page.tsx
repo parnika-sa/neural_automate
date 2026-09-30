@@ -74,13 +74,13 @@ export default function PingControllerPage() {
     }
   }, []);
 
-  // Poll chat messages every 2.0 seconds
+  // Poll chat messages every 1.5 seconds for instant real-time response
   useEffect(() => {
     if (activeChatPin && currentUser && activeTab === 'chat') {
       fetchChatMessages(activeChatPin);
       const interval = setInterval(() => {
         fetchChatMessages(activeChatPin);
-      }, 2000);
+      }, 1500);
       return () => clearInterval(interval);
     }
   }, [activeChatPin, currentUser, activeTab]);
@@ -197,18 +197,7 @@ export default function PingControllerPage() {
       const res = await fetch(`/api/secret-chat?pin=${encodeURIComponent(userPin)}`);
       const data = await res.json();
       if (data.success && Array.isArray(data.messages)) {
-        setMessages(prev => {
-          const serverMsgs = data.messages as ChatMessage[];
-          if (serverMsgs.length === 0 && prev.length === 0) return [];
-          
-          const map = new Map<string, ChatMessage>();
-          prev.forEach(m => {
-            if (m.id.startsWith('temp-')) map.set(m.id, m);
-          });
-          serverMsgs.forEach(m => map.set(m.id, m));
-          
-          return Array.from(map.values());
-        });
+        setMessages(data.messages);
       }
     } catch (e) {
       console.error('Failed to fetch chat messages', e);
@@ -267,6 +256,7 @@ export default function PingControllerPage() {
     }
 
     setClearingChatView(true);
+    setMessages([]); // Instant clear UI
     try {
       const res = await fetch('/api/secret-chat', {
         method: 'POST',
@@ -323,7 +313,7 @@ export default function PingControllerPage() {
             >
               <Terminal className="w-3.5 h-3.5 text-slate-400" />
               <span>Console</span>
-              {activeChatPin && <span className="w-2 h-2 rounded-full bg-emerald-400"></span>}
+              {activeChatPin && <span className="w-2 h-2 rounded-full bg-emerald-400 font-mono"></span>}
             </button>
           </div>
 
@@ -551,8 +541,8 @@ export default function PingControllerPage() {
                 {/* Chat Top Bar */}
                 <div className="flex items-center justify-between bg-slate-950 p-2 rounded-xl border border-slate-800 text-xs">
                   <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                    <span className="font-bold text-slate-200 text-xs">
+                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse font-mono"></span>
+                    <span className="font-bold text-slate-200 text-xs font-mono">
                       {currentUser === 'ankit' ? 'Alpha' : 'Pixel'}
                     </span>
                   </div>

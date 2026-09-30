@@ -16,11 +16,11 @@ export interface ChatStore {
   lastUpdated: string;
 }
 
-const CLOUD_OBJECT_ID = 'ff808181a09d98f701a0f14357214920';
+const CLOUD_OBJECT_ID = 'ff808181a09d98f701a0f16d0d79496a';
 const REST_BASE_URL = 'https://api.restful-api.dev/objects';
 
-// In-Memory fallback store to prevent wiping out data on network timeouts
-let inMemoryStore: ChatStore = {
+// Persistent in-memory cache to prevent data loss across serverless calls
+let cachedStore: ChatStore = {
   messages: [],
   clearedAtAnkit: null,
   clearedAtGf: null,
@@ -29,9 +29,9 @@ let inMemoryStore: ChatStore = {
 
 function getFilePath(): string {
   if (process.env.NODE_ENV === 'production' && process.env.VERCEL) {
-    return path.join('/tmp', 'secret-chat.json');
+    return path.join('/tmp', 'secret-chat-v2.json');
   }
-  return path.join(process.cwd(), 'data', 'secret-chat.json');
+  return path.join(process.cwd(), 'data', 'secret-chat-v2.json');
 }
 
 function getTodayISTDateString(): string {
@@ -56,12 +56,12 @@ function filterTodayMessages(msgs: ChatMessage[]): ChatMessage[] {
 }
 
 export async function getChatDataAsync(): Promise<ChatStore> {
-  let cloudStore: ChatStore | null = null;
+  let cloudData: ChatStore | null = null;
 
-  // 1. Fetch from Cloud REST storage with 4s timeout
+  // 1. Read from Cloud Storage
   try {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 4000);
+    const timeoutId = setTimeout(() => controller.abort(), 3500);
     const res = await fetch(`${REST_BASE_URL}/${CLOUD_OBJECT_ID}`, {
       cache: 'no-store',
       headers: { 'Cache-Control': 'no-cache' },
@@ -72,47 +72,49 @@ export async function getChatDataAsync(): Promise<ChatStore> {
     if (res.ok) {
       const json = await res.json();
       if (json && json.data && Array.isArray(json.data.messages)) {
-        cloudStore = json.data as ChatStore;
+        cloudData = json.data as ChatStore;
       }
     }
   } catch (e) {
-    console.error('Cloud status fetch warning:', e);
+    console.error('Cloud chat fetch warning:', e);
   }
 
-  // 2. Local disk fallback
-  if (!cloudStore) {
+  // 2. Read from Local Disk Fallback if Cloud failed
+  if (!cloudData) {
     try {
       const filePath = getFilePath();
       if (fs.existsSync(filePath)) {
         const raw = fs.readFileSync(filePath, 'utf-8');
-        cloudStore = JSON.parse(raw);
+        cloudData = JSON.parse(raw);
       }
     } catch (err) {}
   }
 
-  // If cloud read succeeded, update in-memory store
-  if (cloudStore && Array.isArray(cloudStore.messages)) {
-    // Merge with in-memory to prevent dropping recent messages
-    const map = new Map<string, ChatMessage>();
-    (inMemoryStore.messages || []).forEach(m => map.set(m.id, m));
-    (cloudStore.messages || []).forEach(m => map.set(m.id, m));
+  // 3. Merge Cloud/Disk data with Cached Store (Prevent losing messages)
+  if (cloudData && Array.isArray(cloudData.messages)) {
+    const messageMap = new Map<string, ChatMessage>();
     
-    inMemoryStore = {
-      ...cloudStore,
-      messages: Array.from(map.values())
+    // Put cached messages first
+    (cachedStore.messages || []).forEach(m => messageMap.set(m.id, m));
+    // Put cloud/disk messages (cloud takes priority)
+    (cloudData.messages || []).forEach(m => messageMap.set(m.id, m));
+
+    cachedStore = {
+      ...cloudData,
+      messages: Array.from(messageMap.values())
     };
   }
 
-  // 3. Filter today's messages (12:00 AM Midnight IST auto-reset)
-  inMemoryStore.messages = filterTodayMessages(inMemoryStore.messages);
+  // Filter messages for Today (12:00 AM Midnight IST auto-reset)
+  cachedStore.messages = filterTodayMessages(cachedStore.messages);
 
-  return inMemoryStore;
+  return cachedStore;
 }
 
 export async function saveChatDataAsync(store: ChatStore): Promise<void> {
-  inMemoryStore = { ...store };
+  cachedStore = { ...store };
 
-  // Write to local disk
+  // Write to local disk file
   try {
     const filePath = getFilePath();
     const dir = path.dirname(filePath);
@@ -133,7 +135,7 @@ export async function saveChatDataAsync(store: ChatStore): Promise<void> {
         'Cache-Control': 'no-cache'
       },
       body: JSON.stringify({
-        name: 'secret_chat_store',
+        name: 'alpha_pixel_chat_store_v99',
         data: store
       }),
       signal: controller.signal
@@ -145,7 +147,6 @@ export async function saveChatDataAsync(store: ChatStore): Promise<void> {
 }
 
 export async function addChatMessageAsync(sender: 'ankit' | 'gf', text: string): Promise<ChatMessage[]> {
-  // Always get freshest store first
   const currentStore = await getChatDataAsync();
   const now = new Date();
   
@@ -164,12 +165,11 @@ export async function addChatMessageAsync(sender: 'ankit' | 'gf', text: string):
     formattedTime
   };
 
-  // Dedup messages list
-  const existingMap = new Map<string, ChatMessage>();
-  (currentStore.messages || []).forEach(m => existingMap.set(m.id, m));
-  existingMap.set(newMsg.id, newMsg);
+  const messageMap = new Map<string, ChatMessage>();
+  (currentStore.messages || []).forEach(m => messageMap.set(m.id, m));
+  messageMap.set(newMsg.id, newMsg);
 
-  const updatedMessages = Array.from(existingMap.values());
+  const updatedMessages = Array.from(messageMap.values());
   const updatedStore: ChatStore = {
     ...currentStore,
     messages: filterTodayMessages(updatedMessages),
