@@ -62,6 +62,7 @@ export default function PingControllerPage() {
   const [chatInputText, setChatInputText] = useState('');
   const [sendingMsg, setSendingMsg] = useState(false);
   const [clearingChatView, setClearingChatView] = useState(false);
+  const [isLocallyCleared, setIsLocallyCleared] = useState(false);
   
   // Container scroll ref
   const chatScrollBoxRef = useRef<HTMLDivElement>(null);
@@ -74,7 +75,7 @@ export default function PingControllerPage() {
     }
   }, []);
 
-  // Poll chat messages every 1.5 seconds for instant real-time response
+  // Poll chat messages every 1.5 seconds
   useEffect(() => {
     if (activeChatPin && currentUser && activeTab === 'chat') {
       fetchChatMessages(activeChatPin);
@@ -83,7 +84,7 @@ export default function PingControllerPage() {
       }, 1500);
       return () => clearInterval(interval);
     }
-  }, [activeChatPin, currentUser, activeTab]);
+  }, [activeChatPin, currentUser, activeTab, isLocallyCleared]);
 
   // Scroll ONLY the inner chat div to bottom when messages update
   useEffect(() => {
@@ -189,6 +190,7 @@ export default function PingControllerPage() {
     setActiveChatPin(null);
     setCurrentUser(null);
     setMessages([]);
+    setIsLocallyCleared(false);
     sessionStorage.removeItem('ping_active_pin');
   };
 
@@ -197,7 +199,20 @@ export default function PingControllerPage() {
       const res = await fetch(`/api/secret-chat?pin=${encodeURIComponent(userPin)}`);
       const data = await res.json();
       if (data.success && Array.isArray(data.messages)) {
-        setMessages(data.messages);
+        const incomingMsgs = data.messages as ChatMessage[];
+        
+        setMessages(prev => {
+          // If user clicked clear view locally and no new messages arrived from server, keep empty
+          if (incomingMsgs.length === 0) {
+            return [];
+          }
+
+          // Merge incoming server messages with existing messages to prevent disappearing glitches
+          const map = new Map<string, ChatMessage>();
+          prev.forEach(m => map.set(m.id, m));
+          incomingMsgs.forEach(m => map.set(m.id, m));
+          return Array.from(map.values());
+        });
       }
     } catch (e) {
       console.error('Failed to fetch chat messages', e);
@@ -227,7 +242,7 @@ export default function PingControllerPage() {
       formattedTime
     };
 
-    // Instant Optimistic Update
+    setIsLocallyCleared(false);
     setMessages(prev => [...prev, tempMsg]);
     if (!customText) setChatInputText('');
     setSendingMsg(true);
@@ -240,7 +255,12 @@ export default function PingControllerPage() {
       });
       const data = await res.json();
       if (data.success && Array.isArray(data.messages)) {
-        setMessages(data.messages);
+        setMessages(prev => {
+          const map = new Map<string, ChatMessage>();
+          prev.forEach(m => map.set(m.id, m));
+          (data.messages as ChatMessage[]).forEach(m => map.set(m.id, m));
+          return Array.from(map.values());
+        });
       }
     } catch (e) {
       console.error('Failed to send message', e);
@@ -256,6 +276,7 @@ export default function PingControllerPage() {
     }
 
     setClearingChatView(true);
+    setIsLocallyCleared(true);
     setMessages([]); // Instant clear UI
     try {
       const res = await fetch('/api/secret-chat', {
@@ -369,7 +390,7 @@ export default function PingControllerPage() {
               </div>
             )}
 
-            {/* Manual Form (No Presets) */}
+            {/* Manual Form */}
             <form onSubmit={handleStatusNoticeSubmit} className="space-y-3 pt-0.5">
               <div className="space-y-1">
                 <label className="text-xs font-semibold text-slate-300 font-mono">

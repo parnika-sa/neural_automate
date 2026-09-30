@@ -16,11 +16,11 @@ export interface ChatStore {
   lastUpdated: string;
 }
 
-const CLOUD_OBJECT_ID = 'ff808181a09d98f701a0f16d0d79496a';
+const PRIMARY_CLOUD_ID = 'ff808181a09d98f701a0f16d0d79496a';
 const REST_BASE_URL = 'https://api.restful-api.dev/objects';
 
-// Persistent in-memory cache to prevent data loss across serverless calls
-let cachedStore: ChatStore = {
+// Persistent memory store inside serverless instance
+let persistentStore: ChatStore = {
   messages: [],
   clearedAtAnkit: null,
   clearedAtGf: null,
@@ -29,9 +29,9 @@ let cachedStore: ChatStore = {
 
 function getFilePath(): string {
   if (process.env.NODE_ENV === 'production' && process.env.VERCEL) {
-    return path.join('/tmp', 'secret-chat-v2.json');
+    return path.join('/tmp', 'alpha-pixel-chat.json');
   }
-  return path.join(process.cwd(), 'data', 'secret-chat-v2.json');
+  return path.join(process.cwd(), 'data', 'alpha-pixel-chat.json');
 }
 
 function getTodayISTDateString(): string {
@@ -56,13 +56,13 @@ function filterTodayMessages(msgs: ChatMessage[]): ChatMessage[] {
 }
 
 export async function getChatDataAsync(): Promise<ChatStore> {
-  let cloudData: ChatStore | null = null;
+  let fetchedData: ChatStore | null = null;
 
-  // 1. Read from Cloud Storage
+  // 1. Fetch from Cloud REST storage with 3.5s timeout
   try {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 3500);
-    const res = await fetch(`${REST_BASE_URL}/${CLOUD_OBJECT_ID}`, {
+    const res = await fetch(`${REST_BASE_URL}/${PRIMARY_CLOUD_ID}`, {
       cache: 'no-store',
       headers: { 'Cache-Control': 'no-cache' },
       signal: controller.signal
@@ -72,47 +72,42 @@ export async function getChatDataAsync(): Promise<ChatStore> {
     if (res.ok) {
       const json = await res.json();
       if (json && json.data && Array.isArray(json.data.messages)) {
-        cloudData = json.data as ChatStore;
+        fetchedData = json.data as ChatStore;
       }
     }
-  } catch (e) {
-    console.error('Cloud chat fetch warning:', e);
-  }
+  } catch (e) {}
 
-  // 2. Read from Local Disk Fallback if Cloud failed
-  if (!cloudData) {
+  // 2. Fetch from Local File fallback if Cloud failed
+  if (!fetchedData) {
     try {
       const filePath = getFilePath();
       if (fs.existsSync(filePath)) {
         const raw = fs.readFileSync(filePath, 'utf-8');
-        cloudData = JSON.parse(raw);
+        fetchedData = JSON.parse(raw);
       }
     } catch (err) {}
   }
 
-  // 3. Merge Cloud/Disk data with Cached Store (Prevent losing messages)
-  if (cloudData && Array.isArray(cloudData.messages)) {
-    const messageMap = new Map<string, ChatMessage>();
-    
-    // Put cached messages first
-    (cachedStore.messages || []).forEach(m => messageMap.set(m.id, m));
-    // Put cloud/disk messages (cloud takes priority)
-    (cloudData.messages || []).forEach(m => messageMap.set(m.id, m));
+  // 3. Merge with persistent store (NEVER DROP EXISTING MESSAGES ON FETCH FAILURE)
+  if (fetchedData && Array.isArray(fetchedData.messages) && fetchedData.messages.length > 0) {
+    const map = new Map<string, ChatMessage>();
+    (persistentStore.messages || []).forEach(m => map.set(m.id, m));
+    (fetchedData.messages || []).forEach(m => map.set(m.id, m));
 
-    cachedStore = {
-      ...cloudData,
-      messages: Array.from(messageMap.values())
+    persistentStore = {
+      ...fetchedData,
+      messages: Array.from(map.values())
     };
   }
 
   // Filter messages for Today (12:00 AM Midnight IST auto-reset)
-  cachedStore.messages = filterTodayMessages(cachedStore.messages);
+  persistentStore.messages = filterTodayMessages(persistentStore.messages);
 
-  return cachedStore;
+  return persistentStore;
 }
 
 export async function saveChatDataAsync(store: ChatStore): Promise<void> {
-  cachedStore = { ...store };
+  persistentStore = { ...store };
 
   // Write to local disk file
   try {
@@ -127,8 +122,8 @@ export async function saveChatDataAsync(store: ChatStore): Promise<void> {
   // Write to Cloud storage
   try {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 4000);
-    await fetch(`${REST_BASE_URL}/${CLOUD_OBJECT_ID}`, {
+    const timeoutId = setTimeout(() => controller.abort(), 3500);
+    await fetch(`${REST_BASE_URL}/${PRIMARY_CLOUD_ID}`, {
       method: 'PUT',
       headers: { 
         'Content-Type': 'application/json',
@@ -141,9 +136,7 @@ export async function saveChatDataAsync(store: ChatStore): Promise<void> {
       signal: controller.signal
     });
     clearTimeout(timeoutId);
-  } catch (e) {
-    console.error('Cloud chat save warning:', e);
-  }
+  } catch (e) {}
 }
 
 export async function addChatMessageAsync(sender: 'ankit' | 'gf', text: string): Promise<ChatMessage[]> {
@@ -165,14 +158,13 @@ export async function addChatMessageAsync(sender: 'ankit' | 'gf', text: string):
     formattedTime
   };
 
-  const messageMap = new Map<string, ChatMessage>();
-  (currentStore.messages || []).forEach(m => messageMap.set(m.id, m));
-  messageMap.set(newMsg.id, newMsg);
+  const map = new Map<string, ChatMessage>();
+  (currentStore.messages || []).forEach(m => map.set(m.id, m));
+  map.set(newMsg.id, newMsg);
 
-  const updatedMessages = Array.from(messageMap.values());
   const updatedStore: ChatStore = {
     ...currentStore,
-    messages: filterTodayMessages(updatedMessages),
+    messages: filterTodayMessages(Array.from(map.values())),
     lastUpdated: now.toISOString()
   };
 
