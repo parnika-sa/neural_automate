@@ -16,7 +16,8 @@ export interface ChatStore {
   lastUpdated: string;
 }
 
-const CLOUD_CHAT_URL = 'https://api.restful-api.dev/objects/ff808181a04ccf2d01a057000cf39999';
+let CURRENT_CLOUD_ID = 'ff808181a09d98f701a0f14357214920';
+const REST_BASE_URL = 'https://api.restful-api.dev/objects';
 
 function getFilePath(): string {
   if (process.env.NODE_ENV === 'production' && process.env.VERCEL) {
@@ -60,11 +61,13 @@ export async function getChatDataAsync(): Promise<ChatStore> {
     lastUpdated: new Date().toISOString()
   };
 
-  // 1. Fetch from cloud storage
+  let fetchedFromCloud = false;
+
+  // 1. Try fetching from Cloud REST storage
   try {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 2500);
-    const res = await fetch(CLOUD_CHAT_URL, {
+    const res = await fetch(`${REST_BASE_URL}/${CURRENT_CLOUD_ID}`, {
       cache: 'no-store',
       headers: { 'Cache-Control': 'no-cache' },
       signal: controller.signal
@@ -75,10 +78,15 @@ export async function getChatDataAsync(): Promise<ChatStore> {
       const json = await res.json();
       if (json && json.data && Array.isArray(json.data.messages)) {
         store = json.data as ChatStore;
+        fetchedFromCloud = true;
       }
     }
   } catch (e) {
-    // Fallback to local file
+    console.error('Cloud chat fetch error:', e);
+  }
+
+  // 2. Local fallback if cloud failed
+  if (!fetchedFromCloud) {
     try {
       const filePath = getFilePath();
       if (fs.existsSync(filePath)) {
@@ -88,7 +96,7 @@ export async function getChatDataAsync(): Promise<ChatStore> {
     } catch (err) {}
   }
 
-  // Filter messages for today (Auto reset at midnight)
+  // Filter messages for today (Midnight IST Auto-Reset)
   const cleanStore = filterTodayMessages(store);
   
   if (cleanStore.messages.length !== (store.messages || []).length) {
@@ -99,6 +107,7 @@ export async function getChatDataAsync(): Promise<ChatStore> {
 }
 
 export async function saveChatDataAsync(store: ChatStore): Promise<void> {
+  // Update local disk first
   try {
     const filePath = getFilePath();
     const dir = path.dirname(filePath);
@@ -108,10 +117,11 @@ export async function saveChatDataAsync(store: ChatStore): Promise<void> {
     fs.writeFileSync(filePath, JSON.stringify(store, null, 2), 'utf-8');
   } catch (e) {}
 
+  // Update Cloud Storage
   try {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 3500);
-    await fetch(CLOUD_CHAT_URL, {
+    const res = await fetch(`${REST_BASE_URL}/${CURRENT_CLOUD_ID}`, {
       method: 'PUT',
       headers: { 
         'Content-Type': 'application/json',
@@ -124,7 +134,27 @@ export async function saveChatDataAsync(store: ChatStore): Promise<void> {
       signal: controller.signal
     });
     clearTimeout(timeoutId);
-  } catch (e) {}
+
+    if (!res.ok) {
+      // If object not found, create new cloud object
+      const createRes = await fetch(REST_BASE_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: 'secret_chat_store',
+          data: store
+        })
+      });
+      if (createRes.ok) {
+        const newObj = await createRes.json();
+        if (newObj && newObj.id) {
+          CURRENT_CLOUD_ID = newObj.id;
+        }
+      }
+    }
+  } catch (e) {
+    console.error('Cloud chat save error:', e);
+  }
 }
 
 export async function addChatMessageAsync(sender: 'ankit' | 'gf', text: string): Promise<ChatMessage[]> {
