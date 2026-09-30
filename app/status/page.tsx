@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { getSystemStatusAsync } from '@/lib/gf-status';
 import Link from 'next/link';
-import { Activity, Clock, Server, CheckCircle2, RefreshCw } from 'lucide-react';
+import { Activity, Clock, Server, CheckCircle2, RefreshCw, AlertTriangle, AlertCircle } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -34,6 +34,32 @@ export default async function StatusPage() {
     'description': status.message,
   };
 
+  const getStatusBadge = (level: 'normal' | 'important' | 'urgent' = 'normal') => {
+    switch (level) {
+      case 'urgent':
+        return {
+          bg: 'bg-rose-500/20 text-rose-400 border-rose-500/40',
+          icon: AlertCircle,
+          label: 'URGENT NOTICE'
+        };
+      case 'important':
+        return {
+          bg: 'bg-amber-500/20 text-amber-400 border-amber-500/40',
+          icon: AlertTriangle,
+          label: 'IMPORTANT NOTICE'
+        };
+      default:
+        return {
+          bg: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/40',
+          icon: CheckCircle2,
+          label: 'LIVE NOTICE ACTIVE'
+        };
+    }
+  };
+
+  const badgeInfo = getStatusBadge(status.level);
+  const BadgeIcon = badgeInfo.icon;
+
   return (
     <div className="min-h-[85vh] pt-24 pb-10 sm:pt-28 sm:pb-16 px-3 sm:px-4 max-w-4xl mx-auto flex flex-col justify-center items-center">
       <script
@@ -56,9 +82,9 @@ export default async function StatusPage() {
             </h1>
           </div>
           
-          <div className="px-3.5 py-1.5 rounded-full border text-xs sm:text-sm font-semibold flex items-center gap-2 bg-emerald-500/20 text-emerald-400 border-emerald-500/40 shrink-0">
-            <CheckCircle2 className="w-4 h-4" />
-            <span>LIVE NOTICE ACTIVE</span>
+          <div className={`px-3.5 py-1.5 rounded-full border text-xs sm:text-sm font-semibold flex items-center gap-2 shrink-0 ${badgeInfo.bg}`}>
+            <BadgeIcon className="w-4 h-4" />
+            <span>{badgeInfo.label}</span>
           </div>
         </div>
 
@@ -79,7 +105,8 @@ export default async function StatusPage() {
             </p>
           </div>
 
-          <div className="pt-3 border-t border-slate-800/60 flex flex-row justify-end items-center text-xs text-slate-400">
+          <div className="pt-3 border-t border-slate-800/60 flex flex-row justify-between items-center text-xs text-slate-400">
+            <span className="text-[11px] font-mono text-slate-500">Auto-resets daily at Midnight IST</span>
             <Link 
               href="/status/raw" 
               className="text-slate-500 hover:text-cyan-400 transition-colors underline font-mono text-xs"
@@ -106,4 +133,3 @@ export default async function StatusPage() {
     </div>
   );
 }
-

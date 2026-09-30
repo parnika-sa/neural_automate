@@ -1,7 +1,7 @@
 {
-  "message": "Take break",
-  "level": "important",
-  "timestamp": "2026-08-31T09:03:52.135Z",
-  "formattedTime": "02:33 PM IST",
-  "updatedBy": "Operator"
+  "message": "All Systems Operational",
+  "level": "normal",
+  "timestamp": "2026-09-30T07:36:46.982Z",
+  "formattedTime": "01:06 PM IST",
+  "updatedBy": "System Auto-Reset"
 }
