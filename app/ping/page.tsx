@@ -9,22 +9,16 @@ import {
   CheckCircle2, 
   AlertCircle, 
   Clock, 
-  Zap, 
   Eye, 
   EyeOff, 
   RefreshCw, 
   Trash2, 
   ShieldCheck,
   LogOut,
-  Coffee,
-  PhoneCall,
-  Flame,
-  CheckCircle,
-  Briefcase,
-  Moon,
   ExternalLink,
   ShieldAlert,
-  Terminal
+  Terminal,
+  Radio
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -43,21 +37,12 @@ interface ChatMessage {
   formattedTime: string;
 }
 
-const STATUS_PRESETS = [
-  { id: 'operational', level: 'normal' as const, label: '🟢 Operational', message: 'All Systems Operational', icon: CheckCircle },
-  { id: 'break', level: 'important' as const, label: '☕ Take Break', message: 'Take break', icon: Coffee },
-  { id: 'urgent', level: 'urgent' as const, label: '📞 Urgent Call', message: 'Urgent Call', icon: PhoneCall },
-  { id: 'deepwork', level: 'important' as const, label: '⚡ Deep Work', message: 'Deep Work / Do Not Disturb', icon: Flame },
-  { id: 'meeting', level: 'important' as const, label: '💼 In a Meeting', message: 'Currently in a meeting', icon: Briefcase },
-  { id: 'away', level: 'normal' as const, label: '🌙 Out / Away', message: 'Away for the day', icon: Moon },
-];
-
 const QUICK_EMOJIS = ['❤️', '😊', '☕', '👍', '😘', '🌙', '🚗'];
 
 export default function PingControllerPage() {
   const [activeTab, setActiveTab] = useState<'status' | 'chat'>('status');
 
-  // Status Form States
+  // Status Form States (Stealth Broadcast Node)
   const [statusMsgText, setStatusMsgText] = useState('');
   const [statusLevel, setStatusLevel] = useState<'normal' | 'important' | 'urgent'>('important');
   const [statusPin, setStatusPin] = useState('');
@@ -89,7 +74,7 @@ export default function PingControllerPage() {
     }
   }, []);
 
-  // Poll chat messages every 2.0 seconds for steady, reliable updates without rate limits
+  // Poll chat messages every 2.0 seconds
   useEffect(() => {
     if (activeChatPin && currentUser && activeTab === 'chat') {
       fetchChatMessages(activeChatPin);
@@ -122,23 +107,17 @@ export default function PingControllerPage() {
     }
   };
 
-  const handlePresetSelect = (presetMsg: string, presetLvl: 'normal' | 'important' | 'urgent') => {
-    setStatusMsgText(presetMsg);
-    setStatusLevel(presetLvl);
-    setStatusNotice(null);
-  };
-
   const handleStatusNoticeSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const pinToUse = statusPin.trim() || activeChatPin || '';
     
     if (!pinToUse) {
-      setStatusNotice({ type: 'error', text: 'Passcode PIN is required to update status.' });
+      setStatusNotice({ type: 'error', text: 'Security Passcode PIN is required.' });
       return;
     }
 
     if (!statusMsgText.trim()) {
-      setStatusNotice({ type: 'error', text: 'Please select a preset or type a custom message.' });
+      setStatusNotice({ type: 'error', text: 'Please enter payload message text.' });
       return;
     }
 
@@ -155,22 +134,23 @@ export default function PingControllerPage() {
       const data = await res.json();
 
       if (!res.ok || !data.success) {
-        setStatusNotice({ type: 'error', text: data.error || 'Failed to update status. Invalid PIN.' });
+        setStatusNotice({ type: 'error', text: data.error || 'Failed to update broadcast payload. Invalid PIN.' });
       } else {
-        setStatusNotice({ type: 'success', text: 'Status notice updated successfully!' });
+        setStatusNotice({ type: 'success', text: 'Broadcast node updated successfully!' });
         setCurrentLiveStatus(data.status);
+        setStatusMsgText('');
         setStatusPin('');
 
         try {
           confetti({
-            particleCount: 60,
-            spread: 70,
+            particleCount: 50,
+            spread: 60,
             origin: { y: 0.6 }
           });
         } catch (e) {}
       }
     } catch (err) {
-      setStatusNotice({ type: 'error', text: 'Network error. Please try again.' });
+      setStatusNotice({ type: 'error', text: 'Network connection error.' });
     } finally {
       setStatusLoading(false);
     }
@@ -218,7 +198,6 @@ export default function PingControllerPage() {
       const data = await res.json();
       if (data.success && Array.isArray(data.messages)) {
         setMessages(prev => {
-          // Merge incoming server messages with any optimistic local messages
           const serverMsgs = data.messages as ChatMessage[];
           if (serverMsgs.length === 0 && prev.length === 0) return [];
           
@@ -317,7 +296,7 @@ export default function PingControllerPage() {
     <div className="min-h-[85vh] pt-16 sm:pt-24 pb-6 sm:pb-12 px-2.5 sm:px-4 w-full max-w-xl mx-auto flex flex-col items-center justify-center">
       <div className="w-full bg-slate-900/95 border border-slate-800 rounded-2xl sm:rounded-3xl p-3 sm:p-5 shadow-2xl backdrop-blur-xl space-y-3 overflow-hidden">
         
-        {/* Navigation Tabs Header */}
+        {/* Stealth Navigation Header */}
         <div className="flex items-center justify-between border-b border-slate-800 pb-2.5">
           <div className="flex items-center gap-1 bg-slate-950 p-1 rounded-xl border border-slate-800">
             <button
@@ -325,12 +304,12 @@ export default function PingControllerPage() {
               onClick={() => setActiveTab('status')}
               className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 ${
                 activeTab === 'status' 
-                  ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 shadow-sm' 
+                  ? 'bg-slate-800 text-cyan-300 border border-slate-700 shadow-sm' 
                   : 'text-slate-400 hover:text-slate-200'
               }`}
             >
-              <Activity className="w-3.5 h-3.5 text-cyan-400" />
-              <span>Status Notice</span>
+              <Radio className="w-3.5 h-3.5 text-cyan-400" />
+              <span>Broadcast Node</span>
             </button>
 
             <button
@@ -344,7 +323,7 @@ export default function PingControllerPage() {
             >
               <Terminal className="w-3.5 h-3.5 text-slate-400" />
               <span>Console</span>
-              {activeChatPin && <span className="w-2 h-2 rounded-full bg-emerald-400 font-mono"></span>}
+              {activeChatPin && <span className="w-2 h-2 rounded-full bg-emerald-400"></span>}
             </button>
           </div>
 
@@ -354,28 +333,25 @@ export default function PingControllerPage() {
           </Link>
         </div>
 
-        {/* ================= TAB 1: STATUS NOTICE UPDATE (DEFAULT) ================= */}
+        {/* ================= TAB 1: STEALTH BROADCAST NODE (STATUS NOTICE) ================= */}
         {activeTab === 'status' && (
           <div className="space-y-4">
             <div className="text-center space-y-1">
-              <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 text-[11px] font-semibold border border-cyan-500/20 font-mono">
-                <Activity className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
-                <span>System Operational Controller</span>
+              <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-slate-800 text-cyan-400 text-[11px] font-mono border border-slate-700">
+                <Radio className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
+                <span>System Broadcast Controller</span>
               </div>
               <h1 className="text-lg sm:text-xl font-extrabold text-white">
-                Update Status Notice
+                Broadcast Node Config
               </h1>
-              <p className="text-[11px] sm:text-xs text-slate-400 max-w-xs sm:max-w-none mx-auto">
-                Type or select a status update below. Resets automatically at 12:00 AM Midnight IST.
-              </p>
             </div>
 
-            {/* Current Live Notice Box */}
+            {/* Current Active Node Data */}
             {currentLiveStatus && (
-              <div className="bg-slate-950/80 border border-slate-800 rounded-xl p-3 space-y-1.5">
+              <div className="bg-slate-950 border border-slate-800 rounded-xl p-3 space-y-1.5">
                 <div className="flex flex-row items-center justify-between text-xs text-slate-400 font-mono">
                   <span className="flex items-center gap-1 text-cyan-400 font-semibold">
-                    <Clock className="w-3.5 h-3.5 shrink-0" /> Current Live Notice:
+                    <Clock className="w-3.5 h-3.5 shrink-0" /> Active Payload:
                   </span>
                   <div className="flex items-center gap-2">
                     <span className={`px-2 py-0.5 rounded-full text-[10px] uppercase font-bold border ${getLevelBadge(currentLiveStatus.level || 'normal')}`}>
@@ -384,7 +360,7 @@ export default function PingControllerPage() {
                     <button 
                       type="button" 
                       onClick={fetchCurrentLiveStatus}
-                      title="Refresh Live Status"
+                      title="Refresh Node Data"
                       className="p-1 hover:bg-slate-800 rounded text-slate-400 hover:text-cyan-400 transition-colors"
                     >
                       <RefreshCw className={`w-3.5 h-3.5 ${fetchingLiveStatus ? 'animate-spin text-cyan-400' : ''}`} />
@@ -397,71 +373,31 @@ export default function PingControllerPage() {
                 </p>
 
                 <div className="text-[10px] text-slate-500 font-mono pt-1 border-t border-slate-900 flex justify-between items-center">
-                  <span>Broadcasted: {currentLiveStatus.formattedTime}</span>
-                  <span>Region: IST</span>
+                  <span>Timestamp: {currentLiveStatus.formattedTime}</span>
+                  <span>Zone: IST</span>
                 </div>
               </div>
             )}
 
-            {/* Presets */}
-            <div className="space-y-1.5">
-              <div className="flex items-center justify-between">
-                <label className="text-[11px] font-semibold uppercase tracking-wider text-slate-400 flex items-center gap-1 font-mono">
-                  <Zap className="w-3.5 h-3.5 text-amber-400 shrink-0" /> Presets:
-                </label>
-                <button
-                  type="button"
-                  onClick={() => handlePresetSelect('All Systems Operational', 'normal')}
-                  className="text-[11px] text-cyan-400 hover:text-cyan-300 hover:underline font-mono"
-                >
-                  Reset to Operational
-                </button>
-              </div>
-              
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
-                {STATUS_PRESETS.map((p) => {
-                  const IconComp = p.icon;
-                  const isSelected = statusMsgText === p.message;
-                  return (
-                    <button
-                      key={p.id}
-                      type="button"
-                      onClick={() => handlePresetSelect(p.message, p.level)}
-                      className={`py-2 px-2 rounded-xl border text-left text-xs font-semibold transition-all min-h-[40px] flex items-center gap-2 ${
-                        isSelected
-                          ? 'bg-cyan-500/20 border-cyan-400 text-cyan-200 ring-1 ring-cyan-400 shadow-sm'
-                          : 'bg-slate-800/60 border-slate-700/60 text-slate-300 hover:bg-slate-800'
-                      }`}
-                    >
-                      <IconComp className={`w-3.5 h-3.5 shrink-0 ${
-                        p.level === 'urgent' ? 'text-rose-400' : p.level === 'important' ? 'text-amber-400' : 'text-emerald-400'
-                      }`} />
-                      <span className="truncate text-xs">{p.label}</span>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Form */}
+            {/* Manual Form (No Presets) */}
             <form onSubmit={handleStatusNoticeSubmit} className="space-y-3 pt-0.5">
               <div className="space-y-1">
-                <label className="text-xs font-semibold text-slate-300">
-                  Custom Message:
+                <label className="text-xs font-semibold text-slate-300 font-mono">
+                  Payload Message:
                 </label>
                 <input
                   type="text"
                   value={statusMsgText}
                   onChange={(e) => setStatusMsgText(e.target.value)}
-                  placeholder="e.g. Take break"
+                  placeholder="Enter status payload text..."
                   className="w-full bg-slate-950 border border-slate-700 rounded-xl p-2.5 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyan-500 min-h-[42px]"
                 />
               </div>
 
-              {/* Priority Level */}
+              {/* Priority Selector */}
               <div className="space-y-1">
                 <label className="text-xs font-semibold text-slate-300 flex items-center gap-1 font-mono">
-                  <ShieldAlert className="w-3.5 h-3.5 text-cyan-400 shrink-0" /> Priority:
+                  <ShieldAlert className="w-3.5 h-3.5 text-cyan-400 shrink-0" /> Level:
                 </label>
                 <div className="grid grid-cols-3 gap-1.5">
                   <button
@@ -506,7 +442,7 @@ export default function PingControllerPage() {
               {/* PIN input */}
               <div className="space-y-1">
                 <label className="text-xs font-semibold text-slate-300 flex items-center gap-1 font-mono">
-                  <Lock className="w-3.5 h-3.5 text-amber-400 shrink-0" /> Passcode PIN:
+                  <Lock className="w-3.5 h-3.5 text-amber-400 shrink-0" /> Security PIN:
                 </label>
                 <div className="relative">
                   <input
@@ -541,14 +477,14 @@ export default function PingControllerPage() {
               <button
                 type="submit"
                 disabled={statusLoading}
-                className="w-full py-3 px-4 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-semibold text-xs shadow-lg shadow-cyan-500/20 transition-all flex items-center justify-center gap-2 disabled:opacity-50 min-h-[44px]"
+                className="w-full py-3 px-4 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-semibold text-xs shadow-lg transition-all flex items-center justify-center gap-2 disabled:opacity-50 min-h-[44px]"
               >
                 {statusLoading ? (
-                  <span>Updating...</span>
+                  <span>Executing...</span>
                 ) : (
                   <>
                     <Send className="w-3.5 h-3.5" />
-                    <span>Update Status Notice</span>
+                    <span>Deploy Broadcast Payload</span>
                   </>
                 )}
               </button>
@@ -644,7 +580,7 @@ export default function PingControllerPage() {
                   </div>
                 </div>
 
-                {/* Highly Efficient Compact Messages Box */}
+                {/* Messages Box */}
                 <div 
                   ref={chatScrollBoxRef}
                   className="h-[360px] sm:h-[460px] max-h-[60vh] overflow-y-auto p-2.5 sm:p-3 bg-slate-950/95 rounded-2xl border border-slate-800/90 space-y-1.5 scrollbar-thin scroll-smooth"
