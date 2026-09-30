@@ -24,7 +24,6 @@ import {
   Moon,
   ExternalLink,
   ShieldAlert,
-  CheckCheck,
   Terminal
 } from 'lucide-react';
 import Link from 'next/link';
@@ -90,13 +89,13 @@ export default function PingControllerPage() {
     }
   }, []);
 
-  // Poll chat messages every 1.2 seconds for super fast real-time response
+  // Poll chat messages every 2.0 seconds for steady, reliable updates without rate limits
   useEffect(() => {
     if (activeChatPin && currentUser && activeTab === 'chat') {
       fetchChatMessages(activeChatPin);
       const interval = setInterval(() => {
         fetchChatMessages(activeChatPin);
-      }, 1200);
+      }, 2000);
       return () => clearInterval(interval);
     }
   }, [activeChatPin, currentUser, activeTab]);
@@ -217,8 +216,20 @@ export default function PingControllerPage() {
     try {
       const res = await fetch(`/api/secret-chat?pin=${encodeURIComponent(userPin)}`);
       const data = await res.json();
-      if (data.success) {
-        setMessages(data.messages || []);
+      if (data.success && Array.isArray(data.messages)) {
+        setMessages(prev => {
+          // Merge incoming server messages with any optimistic local messages
+          const serverMsgs = data.messages as ChatMessage[];
+          if (serverMsgs.length === 0 && prev.length === 0) return [];
+          
+          const map = new Map<string, ChatMessage>();
+          prev.forEach(m => {
+            if (m.id.startsWith('temp-')) map.set(m.id, m);
+          });
+          serverMsgs.forEach(m => map.set(m.id, m));
+          
+          return Array.from(map.values());
+        });
       }
     } catch (e) {
       console.error('Failed to fetch chat messages', e);
@@ -239,15 +250,16 @@ export default function PingControllerPage() {
       timeZone: 'Asia/Kolkata'
     });
 
-    // Optimistic UI update (instant response!)
+    const tempId = `temp-${Date.now()}`;
     const tempMsg: ChatMessage = {
-      id: `temp-${Date.now()}`,
+      id: tempId,
       sender: currentUser,
       text: textToSend.trim(),
       timestamp: currentNow.toISOString(),
       formattedTime
     };
 
+    // Instant Optimistic Update
     setMessages(prev => [...prev, tempMsg]);
     if (!customText) setChatInputText('');
     setSendingMsg(true);
@@ -259,8 +271,8 @@ export default function PingControllerPage() {
         body: JSON.stringify({ pin: activeChatPin, action: 'send', text: textToSend }),
       });
       const data = await res.json();
-      if (data.success) {
-        setMessages(data.messages || []);
+      if (data.success && Array.isArray(data.messages)) {
+        setMessages(data.messages);
       }
     } catch (e) {
       console.error('Failed to send message', e);
@@ -305,7 +317,7 @@ export default function PingControllerPage() {
     <div className="min-h-[85vh] pt-16 sm:pt-24 pb-6 sm:pb-12 px-2.5 sm:px-4 w-full max-w-xl mx-auto flex flex-col items-center justify-center">
       <div className="w-full bg-slate-900/95 border border-slate-800 rounded-2xl sm:rounded-3xl p-3 sm:p-5 shadow-2xl backdrop-blur-xl space-y-3 overflow-hidden">
         
-        {/* Navigation Tabs Header (Stealth Mode) */}
+        {/* Navigation Tabs Header */}
         <div className="flex items-center justify-between border-b border-slate-800 pb-2.5">
           <div className="flex items-center gap-1 bg-slate-950 p-1 rounded-xl border border-slate-800">
             <button
@@ -332,7 +344,7 @@ export default function PingControllerPage() {
             >
               <Terminal className="w-3.5 h-3.5 text-slate-400" />
               <span>Console</span>
-              {activeChatPin && <span className="w-2 h-2 rounded-full bg-emerald-400"></span>}
+              {activeChatPin && <span className="w-2 h-2 rounded-full bg-emerald-400 font-mono"></span>}
             </button>
           </div>
 
@@ -597,7 +609,7 @@ export default function PingControllerPage() {
                 </form>
               </div>
             ) : (
-              /* Authenticated Stealth Chat UI - HIGHLY COMPACT WHATSAPP BUBBLES */
+              /* Authenticated Stealth Chat UI */
               <div className="space-y-2">
                 
                 {/* Chat Top Bar */}
@@ -632,7 +644,7 @@ export default function PingControllerPage() {
                   </div>
                 </div>
 
-                {/* Highly Efficient Compact Messages Box (Mobile Optimized) */}
+                {/* Highly Efficient Compact Messages Box */}
                 <div 
                   ref={chatScrollBoxRef}
                   className="h-[360px] sm:h-[460px] max-h-[60vh] overflow-y-auto p-2.5 sm:p-3 bg-slate-950/95 rounded-2xl border border-slate-800/90 space-y-1.5 scrollbar-thin scroll-smooth"
@@ -664,7 +676,6 @@ export default function PingControllerPage() {
                                 : 'bg-slate-800/90 border border-slate-700 text-slate-100 rounded-bl-none'
                             }`}
                           >
-                            {/* Inline Compact Sender & Time Header */}
                             <div className={`flex items-center justify-between gap-3 text-[10px] font-bold font-mono opacity-90 pb-0.5 ${
                               isMe ? 'text-cyan-200' : 'text-purple-300'
                             }`}>
@@ -672,7 +683,6 @@ export default function PingControllerPage() {
                               <span className="text-[9px] font-normal text-slate-300">{msg.formattedTime}</span>
                             </div>
 
-                            {/* Message Text */}
                             <p className="text-xs whitespace-pre-wrap font-sans text-slate-100">
                               {msg.text}
                             </p>
