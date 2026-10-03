@@ -155,12 +155,24 @@ export default function Footer() {
 
         </div>
 
-        {/* Bottom copyright */}
+        {/* Bottom copyright & legal links */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-4">
           <p>© {new Date().getFullYear()} NeuralAutomate.dev. All rights reserved.</p>
-          <div className="flex gap-6">
+          <div className="flex flex-wrap items-center gap-6">
             <Link href="/privacy" className="hover:text-slate-300 transition-colors">Privacy Policy</Link>
             <Link href="/terms" className="hover:text-slate-300 transition-colors">Terms of Service</Link>
+            {/* Cookie Settings button jo custom event dispatch karta hai modal dubara kholne ke liye */}
+            <button
+              type="button"
+              onClick={() => {
+                if (typeof window !== 'undefined') {
+                  window.dispatchEvent(new Event('open-cookie-settings'));
+                }
+              }}
+              className="hover:text-slate-300 transition-colors cursor-pointer focus:outline-none"
+            >
+              Cookie Settings
+            </button>
           </div>
         </div>
       </div>

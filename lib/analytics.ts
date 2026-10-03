@@ -1,20 +1,33 @@
-// Placeholder Analytics Tracker (GA4 / PostHog Ready)
+import { getConsent } from "@/lib/consent";
 
+/**
+ * Analytics tracking helper function
+ * Window dataLayer mein event push karta hai, lekin sirf tab jab user ne analytics consent diya ho.
+ */
 export function trackEvent(eventName: string, eventData: Record<string, any> = {}) {
-  const payload = {
-    event: eventName,
-    timestamp: new Date().toISOString(),
-    ...eventData,
-  };
+  // SSR Safety check
+  if (typeof window === "undefined") {
+    return;
+  }
 
-  if (typeof window !== 'undefined') {
-    // Client-side tracking placeholder
-    console.log(`[ANALYTICS EVENT]: ${eventName}`, payload);
-    if ((window as any).gtag) {
-      (window as any).gtag('event', eventName, eventData);
+  // Saved consent verify karte hain: Sirf tab push karo jab user ne analytics cookies accept ki hon
+  const consent = getConsent();
+  if (!consent || !consent.analytics) {
+    if (process.env.NODE_ENV !== "production") {
+      console.log(`[ANALYTICS BLOCKED]: User analytics consent absent for event "${eventName}"`);
     }
-  } else {
-    // Server-side logging placeholder
-    console.log(`[SERVER ANALYTICS]: ${eventName}`, payload);
+    return;
+  }
+
+  // DataLayer array ready kar ke event push kar rahe hain
+  window.dataLayer = window.dataLayer || [];
+  window.dataLayer.push({
+    event: eventName,
+    ...eventData,
+  });
+
+  // Development mode only console log
+  if (process.env.NODE_ENV !== "production") {
+    console.log(`[ANALYTICS EVENT PUSHED]: ${eventName}`, eventData);
   }
 }

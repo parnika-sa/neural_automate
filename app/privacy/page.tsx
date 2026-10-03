@@ -1,7 +1,8 @@
 import React from 'react';
 import Link from 'next/link';
-import { ArrowLeft, ShieldCheck } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 
+// Privacy Policy page metadata
 export const metadata = {
   title: "Privacy Policy | NeuralAutomate.dev",
   description: "Privacy Policy for NeuralAutomate.dev - Learn how we collect, protect, and handle data across our website and AI workflow automation systems.",
@@ -12,11 +13,13 @@ export default function PrivacyPage() {
     <article className="pt-28 pb-20 text-white relative">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
         
+        {/* Back navigation link */}
         <Link href="/" className="inline-flex items-center gap-2 text-xs font-mono font-bold text-emerald-400 hover:underline">
           <ArrowLeft className="w-4 h-4" />
           <span>Back to Home</span>
         </Link>
 
+        {/* Page Header */}
         <div className="space-y-3">
           <span className="text-xs font-mono text-emerald-400 font-bold uppercase tracking-widest px-3 py-1 rounded bg-emerald-500/10 border border-emerald-500/30">
             Legal Compliance
@@ -24,9 +27,10 @@ export default function PrivacyPage() {
           <h1 className="text-4xl sm:text-5xl font-display font-extrabold text-white">
             Privacy Policy
           </h1>
-          <p className="text-xs font-mono text-slate-400">Last Updated: August 2026</p>
+          <p className="text-xs font-mono text-slate-400">Last Updated: October 2026</p>
         </div>
 
+        {/* Policy Content Card */}
         <div className="tech-card rounded-2xl p-6 sm:p-10 border border-tech-border space-y-6 text-slate-300 text-sm leading-relaxed">
           <section className="space-y-2">
             <h2 className="text-lg font-bold text-white">1. Information We Collect</h2>
@@ -42,10 +46,28 @@ export default function PrivacyPage() {
             </p>
           </section>
 
-          <section className="space-y-2">
+          {/* Section 3: Cookies & Analytics (Cookie consent compliance section update) */}
+          <section className="space-y-3">
             <h2 className="text-lg font-bold text-white">3. Cookies & Analytics</h2>
             <p>
-              We use minimal, privacy-focused analytical telemetry to measure website performance, sub-second load speeds, and user interactions on our pages.
+              We use cookies to improve user experience, analyze site performance, and ensure core security features:
+            </p>
+            <ul className="list-disc list-inside space-y-2 pl-2 text-slate-300">
+              <li>
+                <strong>Necessary Cookies:</strong> Required for fundamental site functionality, system security, and session persistence. These cookies are active by default and cannot be disabled.
+              </li>
+              <li>
+                <strong>Analytics Cookies:</strong> Help us measure page visit counts, load speed performance, and user navigation flow to optimize site architecture.
+              </li>
+              <li>
+                <strong>Marketing Cookies:</strong> Allow us to evaluate advertising performance and provide relevant AI automation solution suggestions.
+              </li>
+            </ul>
+            <p className="pt-1">
+              We manage third-party telemetry through <strong>Google Tag Manager (GTM)</strong>. GTM and analytics scripts are dynamically initialized <em>only after you grant explicit consent</em> via our Cookie Banner.
+            </p>
+            <p>
+              You can modify or withdraw your consent at any time by clicking the <strong>"Cookie Settings"</strong> link located in the website footer.
             </p>
           </section>
 
