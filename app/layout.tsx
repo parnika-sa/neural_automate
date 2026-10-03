@@ -1,11 +1,8 @@
 import type { Metadata } from "next";
 import { Inter, Outfit } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import CookieConsent from "@/components/CookieConsent";
 import SeoAeoGeoSchema from "@/components/SeoAeoGeoSchema";
-import PageTransition from "@/components/PageTransition";
+import RootLayoutShell from "@/components/RootLayoutShell";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -78,17 +75,12 @@ export default function RootLayout({
         <SeoAeoGeoSchema />
       </head>
       <body className="bg-background text-foreground min-h-screen flex flex-col font-sans antialiased relative">
-        <Navbar />
-        <main className="flex-grow z-10">
-          <PageTransition>
-            {children}
-          </PageTransition>
-        </main>
-        <Footer />
-        {/* Cookie Consent banner component: layout load par consent verify / handle karega */}
-        <CookieConsent />
+        <RootLayoutShell>
+          {children}
+        </RootLayoutShell>
       </body>
     </html>
   );
 }
+
 

@@ -8,12 +8,13 @@ import { trackEvent } from '@/lib/analytics';
 export default function ContactPage() {
   const searchParams = useSearchParams();
   const planQuery = searchParams.get('plan');
+  const currencyQuery = searchParams.get('currency');
 
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     company: '',
-    workflowType: planQuery ? `${planQuery} Tier Plan Inquiry` : 'Custom AI Workflow',
+    workflowType: planQuery ? `${planQuery} (${currencyQuery || 'INR'})` : 'Custom AI Workflow',
     message: '',
   });
 
@@ -25,11 +26,11 @@ export default function ContactPage() {
     if (planQuery) {
       setFormData((prev) => ({
         ...prev,
-        workflowType: `${planQuery} Plan Inquiry`,
-        message: prev.message || `Interested in the ${planQuery} tier automation package.`,
+        workflowType: `${planQuery} (${currencyQuery || 'INR'})`,
+        message: prev.message || `I am interested in getting started with the ${planQuery} package (${currencyQuery || 'INR'}).`,
       }));
     }
-  }, [planQuery]);
+  }, [planQuery, currencyQuery]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
