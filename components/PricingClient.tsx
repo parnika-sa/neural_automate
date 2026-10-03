@@ -133,7 +133,7 @@ export default function PricingClient() {
           </div>
 
           <span className="text-[11px] font-mono text-slate-400">
-            {currency === 'INR' ? 'Prices shown in INR (₹) excl. GST' : 'Prices shown in USD ($) for international clients'}
+            {currency === 'INR' ? 'Prices shown in INR (₹)' : 'Prices shown in USD ($) for international clients'}
           </span>
         </div>
 

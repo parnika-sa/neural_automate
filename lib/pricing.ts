@@ -700,10 +700,6 @@ export const termsAndNotes: TermRow[] = [
     detail: "Website & initial automation setup: 50% advance upon contract signing, 50% on final delivery. Monthly retainer services are paid in advance on the 1st of each billing cycle."
   },
   {
-    point: "GST",
-    detail: "18% GST applicable extra on all domestic INR invoices as per Indian Government regulations."
-  },
-  {
     point: "Third-party costs",
     detail: "Domain registration, hosting servers, WhatsApp API Meta conversation fees, ad spend, and third-party SaaS tool subscriptions (e.g. OpenAI tokens, Twilio) are paid directly by the client."
   },
@@ -717,7 +713,7 @@ export const termsAndNotes: TermRow[] = [
   },
   {
     point: "Refund policy",
-    detail: "Initial advance payments are non-refundable once engineering or design work has commenced."
+    detail: "We follow a fair pro-rata refund policy. If you cancel with 3–5 calendar days written notice, you only pay for completed deliverables and effort. Any unspent advance balance is refunded within 5–7 working days."
   },
   {
     point: "International clients",
