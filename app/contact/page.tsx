@@ -15,6 +15,8 @@ import {
   MessageSquare,
   MapPin,
   Bot,
+  Instagram,
+  Facebook,
 } from 'lucide-react';
 import { trackEvent } from '@/lib/analytics';
 import { SITE_CONFIG } from '@/lib/site-config';
@@ -88,12 +90,12 @@ export default function ContactPage() {
             Let's Automate Your <span className="gradient-text-electric">Business Operations</span>
           </h1>
           <p className="text-slate-400 text-base max-w-xl mx-auto">
-            Fill out the form below, send an email, or message us directly on WhatsApp for immediate support.
+            Fill out the form below, send an email, or message us directly on WhatsApp or social media.
           </p>
         </div>
 
         {/* BUSINESS INFORMATION GRID */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 max-w-5xl mx-auto">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 max-w-6xl mx-auto">
           {/* Email */}
           <a
             href={`mailto:${SITE_CONFIG.email}`}
@@ -103,7 +105,7 @@ export default function ContactPage() {
               <Mail className="w-4 h-4" />
             </div>
             <div className="text-xs font-mono text-slate-400 uppercase tracking-wider font-semibold">Email Us</div>
-            <div className="text-sm font-bold text-slate-200 group-hover:text-emerald-400 transition-colors">
+            <div className="text-xs font-bold text-slate-200 group-hover:text-emerald-400 transition-colors truncate">
               {SITE_CONFIG.email}
             </div>
             <div className="text-[11px] font-mono text-slate-500">Responds within 24h</div>
@@ -120,7 +122,7 @@ export default function ContactPage() {
               <MessageSquare className="w-4 h-4" />
             </div>
             <div className="text-xs font-mono text-slate-400 uppercase tracking-wider font-semibold">WhatsApp (Founder)</div>
-            <div className="text-sm font-bold text-slate-200 group-hover:text-emerald-400 transition-colors">
+            <div className="text-xs font-bold text-slate-200 group-hover:text-emerald-400 transition-colors">
               {SITE_CONFIG.whatsappDisplay}
             </div>
             <div className="text-[11px] font-mono text-slate-500">Direct Ankit Maurya</div>
@@ -137,11 +139,41 @@ export default function ContactPage() {
               <Bot className="w-4 h-4" />
             </div>
             <div className="text-xs font-mono text-slate-400 uppercase tracking-wider font-semibold">NEO (24x7 AI Sales)</div>
-            <div className="text-sm font-bold text-slate-200 group-hover:text-emerald-400 transition-colors">
+            <div className="text-xs font-bold text-slate-200 group-hover:text-emerald-400 transition-colors">
               {SITE_CONFIG.neoPhoneDisplay}
             </div>
             <div className="text-[11px] font-mono text-slate-500">Instant AI Assistant</div>
           </a>
+
+          {/* Social Handles */}
+          <div className="p-5 rounded-2xl tech-card border border-emerald-500/20 bg-[#07120a] space-y-2">
+            <div className="w-9 h-9 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+              <Instagram className="w-4 h-4" />
+            </div>
+            <div className="text-xs font-mono text-slate-400 uppercase tracking-wider font-semibold">Social Handles</div>
+            <div className="flex items-center gap-2 pt-0.5">
+              <a
+                href={SITE_CONFIG.instagramUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs font-bold text-emerald-400 hover:underline flex items-center gap-1"
+              >
+                <span>Instagram</span>
+                <ExternalLink className="w-3 h-3" />
+              </a>
+              <span className="text-slate-600">•</span>
+              <a
+                href={SITE_CONFIG.facebookUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs font-bold text-emerald-400 hover:underline flex items-center gap-1"
+              >
+                <span>Facebook</span>
+                <ExternalLink className="w-3 h-3" />
+              </a>
+            </div>
+            <div className="text-[11px] font-mono text-slate-500">@neural_automate</div>
+          </div>
 
           {/* Location & Hours */}
           <div className="p-5 rounded-2xl tech-card border border-emerald-500/20 bg-[#07120a] space-y-2">
@@ -149,7 +181,7 @@ export default function ContactPage() {
               <MapPin className="w-4 h-4" />
             </div>
             <div className="text-xs font-mono text-slate-400 uppercase tracking-wider font-semibold">Location & Hours</div>
-            <div className="text-sm font-bold text-slate-200">
+            <div className="text-xs font-bold text-slate-200">
               {SITE_CONFIG.location}
             </div>
             <div className="text-[11px] font-mono text-slate-500">{SITE_CONFIG.businessHours}</div>

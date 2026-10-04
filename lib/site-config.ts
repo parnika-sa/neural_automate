@@ -17,6 +17,8 @@ export const SITE_CONFIG = {
   neoWhatsappUrl: "https://wa.me/17537231090",
   
   siteUrl: "https://neuralautomate.dev",
+  instagramUrl: "https://www.instagram.com/neural_automate/",
+  facebookUrl: "https://www.facebook.com/people/Neural-automate/61590435463837/?ref=PROFILE_EDIT_xav_ig_profile_page_web",
   businessModel: "Online-First Remote Service Studio (Websites, Marketing & AI Automations)",
   gstRegistered: false, // GST registered nahi hai
   businessHours: "Mon - Sat, 10:00 AM - 7:00 PM IST",

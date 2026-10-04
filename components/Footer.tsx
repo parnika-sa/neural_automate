@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Mail, MessageSquare, MapPin, Globe, Share2, Check, ShieldCheck, Phone, Bot, ArrowUpRight, Activity } from 'lucide-react';
+import { Mail, MessageSquare, MapPin, Globe, Share2, Check, ShieldCheck, Phone, Bot, ArrowUpRight, Activity, Instagram, Facebook } from 'lucide-react';
 import { SITE_CONFIG } from '@/lib/site-config';
 
 export default function Footer() {
@@ -45,11 +45,11 @@ export default function Footer() {
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-24 bg-emerald-500/5 blur-3xl pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 space-y-12">
-        {/* TOP MAIN GRID */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8 lg:gap-10 pb-12 border-b border-emerald-500/10">
+        {/* TOP MAIN GRID (12-column system: 4 + 2 + 2 + 2 + 2 = 12) */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-6 lg:grid-cols-12 gap-8 lg:gap-8 pb-12 border-b border-emerald-500/10">
           
-          {/* COLUMN 1: BRAND PROFILE */}
-          <div className="sm:col-span-2 md:col-span-3 lg:col-span-1 space-y-4">
+          {/* COLUMN 1: BRAND PROFILE (Spans 4 columns out of 12 on desktop for full breathing room) */}
+          <div className="sm:col-span-2 md:col-span-6 lg:col-span-4 space-y-4 pr-0 lg:pr-6">
             <Link href="/" className="inline-flex items-center gap-2.5 group">
               <div className="relative w-8 h-8 rounded-lg overflow-hidden border border-emerald-500/30 group-hover:border-emerald-400 transition-all shrink-0">
                 <Image
@@ -60,7 +60,7 @@ export default function Footer() {
                   className="object-cover w-full h-full"
                 />
               </div>
-              <span className="font-display font-black text-xl text-white tracking-tight">
+              <span className="font-display font-black text-xl text-white tracking-tight whitespace-nowrap">
                 Neural<span className="gradient-text-electric">Automate</span>.dev
               </span>
             </Link>
@@ -69,17 +69,43 @@ export default function Footer() {
               We design, engineer, and deploy high-converting websites, 24/7 WhatsApp AI chatbots, and automated n8n lead workflows.
             </p>
 
-            <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-[11px] font-mono text-emerald-400">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span>All Systems Operational</span>
+            <div>
+              <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-[11px] font-mono text-emerald-400">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                <span>All Systems Operational</span>
+              </div>
             </div>
 
             <div className="flex items-center gap-2 pt-1">
+              {/* Instagram link */}
+              <a
+                href={SITE_CONFIG.instagramUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                title="Follow us on Instagram"
+                className="w-8.5 h-8.5 rounded-lg bg-[#07120a] border border-emerald-500/20 flex items-center justify-center text-slate-400 hover:text-emerald-400 hover:border-emerald-500/40 transition-all cursor-pointer"
+                aria-label="Instagram"
+              >
+                <Instagram className="w-4 h-4" />
+              </a>
+
+              {/* Facebook link */}
+              <a
+                href={SITE_CONFIG.facebookUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                title="Follow us on Facebook"
+                className="w-8.5 h-8.5 rounded-lg bg-[#07120a] border border-emerald-500/20 flex items-center justify-center text-slate-400 hover:text-emerald-400 hover:border-emerald-500/40 transition-all cursor-pointer"
+                aria-label="Facebook"
+              >
+                <Facebook className="w-4 h-4" />
+              </a>
+
               <button
                 type="button"
                 onClick={handleGlobeClick}
                 title="Scroll to Top"
-                className="w-8 h-8 rounded-lg bg-[#07120a] border border-emerald-500/20 flex items-center justify-center text-slate-400 hover:text-emerald-400 hover:border-emerald-500/40 transition-all cursor-pointer"
+                className="w-8.5 h-8.5 rounded-lg bg-[#07120a] border border-emerald-500/20 flex items-center justify-center text-slate-400 hover:text-emerald-400 hover:border-emerald-500/40 transition-all cursor-pointer"
                 aria-label="Scroll to Top"
               >
                 <Globe className="w-4 h-4" />
@@ -89,7 +115,7 @@ export default function Footer() {
                 type="button"
                 onClick={handleShare}
                 title="Share Website Link"
-                className="w-8 h-8 rounded-lg bg-[#07120a] border border-emerald-500/20 flex items-center justify-center text-slate-400 hover:text-emerald-400 hover:border-emerald-500/40 transition-all cursor-pointer relative"
+                className="w-8.5 h-8.5 rounded-lg bg-[#07120a] border border-emerald-500/20 flex items-center justify-center text-slate-400 hover:text-emerald-400 hover:border-emerald-500/40 transition-all cursor-pointer relative"
                 aria-label="Share Website Link"
               >
                 {copied ? <Check className="w-4 h-4 text-emerald-400" /> : <Share2 className="w-4 h-4" />}
@@ -102,8 +128,8 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* COLUMN 2: SERVICES */}
-          <nav aria-label="Services Links" className="space-y-3">
+          {/* COLUMN 2: SERVICES (Spans 2 columns) */}
+          <nav aria-label="Services Links" className="sm:col-span-1 md:col-span-3 lg:col-span-2 space-y-3">
             <h3 className="font-display font-bold text-white text-xs uppercase tracking-wider text-emerald-400">
               Services
             </h3>
@@ -139,7 +165,7 @@ export default function Footer() {
                 </Link>
               </li>
               <li className="pt-1">
-                <Link href="/services" className="text-emerald-400 font-mono text-[11px] hover:underline inline-flex items-center gap-1">
+                <Link href="/services" className="text-emerald-400 font-mono text-[11px] hover:underline inline-flex items-center gap-1 font-bold">
                   <span>All Services</span>
                   <ArrowUpRight className="w-3 h-3" />
                 </Link>
@@ -147,8 +173,8 @@ export default function Footer() {
             </ul>
           </nav>
 
-          {/* COLUMN 3: EXPLORE */}
-          <nav aria-label="Explore Links" className="space-y-3">
+          {/* COLUMN 3: EXPLORE (Spans 2 columns) */}
+          <nav aria-label="Explore Links" className="sm:col-span-1 md:col-span-3 lg:col-span-2 space-y-3">
             <h3 className="font-display font-bold text-white text-xs uppercase tracking-wider text-emerald-400">
               Explore
             </h3>
@@ -168,8 +194,8 @@ export default function Footer() {
             </ul>
           </nav>
 
-          {/* COLUMN 4: LEGAL & SUPPORT */}
-          <nav aria-label="Legal & Support Links" className="space-y-3">
+          {/* COLUMN 4: LEGAL & SUPPORT (Spans 2 columns) */}
+          <nav aria-label="Legal & Support Links" className="sm:col-span-1 md:col-span-3 lg:col-span-2 space-y-3">
             <h3 className="font-display font-bold text-white text-xs uppercase tracking-wider text-emerald-400">
               Legal & Support
             </h3>
@@ -200,8 +226,8 @@ export default function Footer() {
             </ul>
           </nav>
 
-          {/* COLUMN 5: DIRECT REACH & ADDRESS */}
-          <div className="space-y-3">
+          {/* COLUMN 5: DIRECT REACH & ADDRESS (Spans 2 columns) */}
+          <div className="sm:col-span-1 md:col-span-3 lg:col-span-2 space-y-3">
             <h3 className="font-display font-bold text-white text-xs uppercase tracking-wider text-emerald-400">
               Direct Reach
             </h3>
@@ -214,7 +240,7 @@ export default function Footer() {
               {/* NEO Phone Line */}
               <p className="flex items-center gap-2">
                 <Bot className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                <a href={SITE_CONFIG.neoWhatsappUrl} target="_blank" rel="noopener noreferrer" className="hover:text-emerald-400 transition-colors">
+                <a href={SITE_CONFIG.neoWhatsappUrl} target="_blank" rel="noopener noreferrer" className="hover:text-emerald-400 transition-colors whitespace-nowrap">
                   {SITE_CONFIG.neoPhoneDisplay} <span className="text-[10px] text-emerald-400 font-mono font-bold">(NEO AI)</span>
                 </a>
               </p>
@@ -222,7 +248,7 @@ export default function Footer() {
               {/* WhatsApp Founder Line */}
               <p className="flex items-center gap-2">
                 <MessageSquare className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                <a href={SITE_CONFIG.whatsappUrl} target="_blank" rel="noopener noreferrer" className="hover:text-emerald-400 transition-colors">
+                <a href={SITE_CONFIG.whatsappUrl} target="_blank" rel="noopener noreferrer" className="hover:text-emerald-400 transition-colors whitespace-nowrap">
                   {SITE_CONFIG.whatsappDisplay} <span className="text-[10px] text-slate-400 font-mono">(IN Founder)</span>
                 </a>
               </p>
