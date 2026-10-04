@@ -327,8 +327,98 @@ export default function PricingClient() {
                   </p>
                 </div>
 
-                {/* Table Container */}
-                <div className="tech-card rounded-2xl border border-emerald-500/20 overflow-hidden bg-[#07120a] shadow-xl">
+                {/* MOBILE CARDS VIEW (block md:hidden) */}
+                <div className="block md:hidden space-y-4">
+                  {section.rows.map((row) => {
+                    const isLoadingThis = loadingPlan === row.name;
+
+                    return (
+                      <div 
+                        key={row.slug}
+                        className={`p-5 rounded-2xl border bg-[#07120a] space-y-4 shadow-lg ${
+                          row.popular ? 'border-emerald-500/60 ring-1 ring-emerald-500/30' : 'border-emerald-500/20'
+                        }`}
+                      >
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="space-y-1">
+                            <div className="font-bold text-base text-white">{row.name}</div>
+                            {row.popular && (
+                              <span className="inline-flex items-center gap-1 text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-500 text-slate-950 shadow-sm">
+                                Most Popular
+                              </span>
+                            )}
+                          </div>
+
+                          {/* Pricing readout */}
+                          <div className="text-right">
+                            {row.setup || row.monthly ? (
+                              <div className="space-y-0.5 font-mono text-xs">
+                                {row.setup && (
+                                  <div className="text-slate-300">
+                                    <span className="text-white font-bold">{formatPrice(row.setup, currency)}</span> <span className="text-[10px] text-slate-400">setup</span>
+                                  </div>
+                                )}
+                                {row.monthly && (
+                                  <div className="text-emerald-400 font-bold">
+                                    <span>{formatPrice(row.monthly, currency)}</span> <span className="text-[10px] text-emerald-300">/mo</span>
+                                  </div>
+                                )}
+                              </div>
+                            ) : (
+                              <div className="font-mono text-base font-bold text-emerald-400">
+                                {formatPrice(row.price, currency)}
+                                {row.price?.type === 'monthly' && <span className="text-xs font-normal text-slate-400">/mo</span>}
+                                {row.price?.type === 'one-time' && <span className="text-xs font-normal text-slate-400"> setup</span>}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+
+                        <p className="text-xs text-slate-300 leading-relaxed border-t border-emerald-500/10 pt-3">
+                          {row.details}
+                        </p>
+
+                        {(row.delivery || row.billing) && (
+                          <div className="text-[11px] font-mono text-slate-400 flex items-center justify-between border-t border-emerald-500/10 pt-2">
+                            <span className="text-slate-500">Timeline / Billing:</span>
+                            <span className="text-emerald-400 font-bold">{row.delivery || row.billing}</span>
+                          </div>
+                        )}
+
+                        <button
+                          type="button"
+                          onClick={() => handleCheckout(row.name, row.quoteOnly)}
+                          disabled={isLoadingThis}
+                          className={`w-full py-3 px-4 rounded-xl font-bold text-xs flex items-center justify-center gap-2 cursor-pointer transition-all ${
+                            row.popular
+                              ? 'bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-lg shadow-emerald-500/20'
+                              : 'bg-[#040705] border border-emerald-500/30 text-slate-200 hover:border-emerald-400 hover:text-white'
+                          }`}
+                        >
+                          {isLoadingThis ? (
+                            <>
+                              <Activity className="w-4 h-4 animate-spin" />
+                              <span>Initializing...</span>
+                            </>
+                          ) : row.quoteOnly || currency === 'USD' ? (
+                            <>
+                              <span>Get Custom Quote</span>
+                              <ArrowRight className="w-4 h-4" />
+                            </>
+                          ) : (
+                            <>
+                              <CreditCard className="w-4 h-4" />
+                              <span>Pay Online</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* DESKTOP TABLE VIEW (hidden md:block) */}
+                <div className="hidden md:block tech-card rounded-2xl border border-emerald-500/20 overflow-hidden bg-[#07120a] shadow-xl">
                   <div className="overflow-x-auto w-full">
                     <table className="w-full text-left border-collapse text-xs sm:text-sm" aria-label={section.title}>
                       <thead>
@@ -479,7 +569,72 @@ export default function PricingClient() {
           </p>
         </div>
 
-        <div className="tech-card rounded-2xl border border-emerald-500/20 overflow-hidden bg-[#07120a] shadow-xl">
+        {/* MOBILE BUNDLE CARDS (block md:hidden) */}
+        <div className="block md:hidden space-y-4">
+          {bundlePacks.map((bundle) => {
+            const isLoadingThis = loadingPlan === bundle.name;
+
+            return (
+              <div 
+                key={bundle.slug}
+                className={`p-5 rounded-2xl border bg-[#07120a] space-y-4 shadow-lg ${
+                  bundle.popular ? 'border-emerald-500/60 ring-1 ring-emerald-500/30' : 'border-emerald-500/20'
+                }`}
+              >
+                <div className="flex items-start justify-between gap-2">
+                  <div className="space-y-1">
+                    <div className="font-bold text-base text-white">{bundle.name}</div>
+                    {bundle.popular && (
+                      <span className="inline-flex items-center gap-1 text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-500 text-slate-950 shadow-sm">
+                        Most Popular
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="text-right font-mono text-xs">
+                    <div className="text-white font-bold">{formatPrice(bundle.setup, currency)} <span className="text-[10px] text-slate-400">setup</span></div>
+                    <div className="text-emerald-400 font-bold">{formatPrice(bundle.monthly, currency)} <span className="text-[10px] text-emerald-300">/mo</span></div>
+                  </div>
+                </div>
+
+                <p className="text-xs text-slate-300 leading-relaxed border-t border-emerald-500/10 pt-3">
+                  {bundle.details}
+                </p>
+
+                <button
+                  type="button"
+                  onClick={() => handleCheckout(bundle.name)}
+                  disabled={isLoadingThis}
+                  className={`w-full py-3 px-4 rounded-xl font-bold text-xs flex items-center justify-center gap-2 cursor-pointer transition-all ${
+                    bundle.popular
+                      ? 'bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-lg shadow-emerald-500/20'
+                      : 'bg-[#040705] border border-emerald-500/30 text-slate-200 hover:border-emerald-400 hover:text-white'
+                  }`}
+                >
+                  {isLoadingThis ? (
+                    <>
+                      <Activity className="w-4 h-4 animate-spin" />
+                      <span>Initializing...</span>
+                    </>
+                  ) : currency === 'USD' ? (
+                    <>
+                      <span>Get Custom Quote</span>
+                      <ArrowRight className="w-4 h-4" />
+                    </>
+                  ) : (
+                    <>
+                      <CreditCard className="w-4 h-4" />
+                      <span>Pay Online</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* DESKTOP BUNDLE TABLE (hidden md:block) */}
+        <div className="hidden md:block tech-card rounded-2xl border border-emerald-500/20 overflow-hidden bg-[#07120a] shadow-xl">
           <div className="overflow-x-auto w-full">
             <table className="w-full text-left border-collapse text-xs sm:text-sm" aria-label="Bundle Packs">
               <thead>
@@ -579,7 +734,18 @@ export default function PricingClient() {
           </p>
         </div>
 
-        <div className="tech-card rounded-2xl border border-emerald-500/20 overflow-hidden bg-[#07120a] shadow-xl">
+        {/* MOBILE TERMS CARDS (block md:hidden) */}
+        <div className="block md:hidden space-y-3">
+          {termsAndNotes.map((term, idx) => (
+            <div key={idx} className="p-4 rounded-2xl border border-emerald-500/20 bg-[#07120a] space-y-1.5 shadow-md">
+              <div className="font-bold text-white text-xs font-mono text-emerald-400">{term.point}</div>
+              <div className="text-xs text-slate-300 leading-relaxed">{term.detail}</div>
+            </div>
+          ))}
+        </div>
+
+        {/* DESKTOP TERMS TABLE (hidden md:block) */}
+        <div className="hidden md:block tech-card rounded-2xl border border-emerald-500/20 overflow-hidden bg-[#07120a] shadow-xl">
           <div className="overflow-x-auto w-full">
             <table className="w-full text-left border-collapse text-xs sm:text-sm" aria-label="Terms and Notes">
               <thead>

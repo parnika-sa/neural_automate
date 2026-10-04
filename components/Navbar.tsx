@@ -14,10 +14,8 @@ import {
   ScanLine,
   Mail,
   Workflow,
-  Sparkles,
   BookOpen,
   PlayCircle,
-  HelpCircle,
   Calculator,
   Compass,
   Zap,
@@ -49,7 +47,7 @@ export default function Navbar() {
 
   const resourceItems = [
     { title: 'Case Studies', desc: 'Real client automation results', href: '/case-studies', icon: Zap },
-    { title: 'Live Demo Sandbox', desc: 'Test live AI agent workflows', href: '/demo', icon: PlayCircle, badge: 'Interactive' },
+    { title: 'Live Demo Sandbox', desc: 'Test live AI agent workflows', href: '/demo', icon: PlayCircle, badge: 'Live' },
     { title: 'Blog & Insights', desc: 'Articles on AEO, GEO & n8n', href: '/blog', icon: BookOpen },
     { title: 'How It Works', desc: 'Our systematic 4-step process', href: '/how-it-works', icon: Compass },
     { title: 'ROI Calculator', desc: 'Calculate team time saved', href: '/calculator', icon: Calculator },
@@ -104,7 +102,7 @@ export default function Navbar() {
             >
               <button
                 type="button"
-                className="inline-flex items-center gap-1 hover:text-emerald-400 transition-colors py-2 focus:outline-none"
+                className="inline-flex items-center gap-1 hover:text-emerald-400 transition-colors py-2 focus:outline-none cursor-pointer"
               >
                 <span>Services</span>
                 <ChevronDown className={`w-3.5 h-3.5 transition-transform ${servicesDropdown ? 'rotate-180 text-emerald-400' : ''}`} />
@@ -144,7 +142,7 @@ export default function Navbar() {
               )}
             </div>
 
-            {/* Resources / Showcase Dropdown */}
+            {/* Resources Dropdown */}
             <div
               className="relative"
               onMouseEnter={() => setResourcesDropdown(true)}
@@ -152,7 +150,7 @@ export default function Navbar() {
             >
               <button
                 type="button"
-                className="inline-flex items-center gap-1 hover:text-emerald-400 transition-colors py-2 focus:outline-none"
+                className="inline-flex items-center gap-1 hover:text-emerald-400 transition-colors py-2 focus:outline-none cursor-pointer"
               >
                 <span>Resources</span>
                 <ChevronDown className={`w-3.5 h-3.5 transition-transform ${resourcesDropdown ? 'rotate-180 text-emerald-400' : ''}`} />
@@ -227,43 +225,74 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Mobile Drawer */}
+      {/* Mobile Drawer (Clean Flex Column Layout - No text overlap!) */}
       {mobileMenuOpen && (
-        <div className="lg:hidden bg-[#07120a] border-b border-emerald-500/30 px-6 py-6 mt-3 space-y-4 shadow-2xl text-slate-200">
-          <nav className="flex flex-col space-y-3 text-sm font-semibold">
-            <Link href="/" onClick={() => setMobileMenuOpen(false)}>Home</Link>
-            <Link href="/about" onClick={() => setMobileMenuOpen(false)}>About Us</Link>
+        <div className="lg:hidden bg-[#07120a] border-b border-emerald-500/30 px-6 py-6 mt-3 shadow-2xl text-slate-200 space-y-5 max-h-[85vh] overflow-y-auto">
+          <nav className="flex flex-col space-y-4 text-sm font-semibold">
+            <Link href="/" onClick={() => setMobileMenuOpen(false)} className="hover:text-emerald-400 transition-colors">
+              Home
+            </Link>
+            <Link href="/about" onClick={() => setMobileMenuOpen(false)} className="hover:text-emerald-400 transition-colors">
+              About Us
+            </Link>
 
-            <div className="pt-2 border-t border-emerald-500/20 space-y-2">
+            {/* Mobile Services Section */}
+            <div className="pt-3 border-t border-emerald-500/20 flex flex-col gap-2.5">
               <div className="text-[10px] font-mono text-emerald-400 font-bold uppercase tracking-wider">Services</div>
-              <Link href="/services/whatsapp-bot" onClick={() => setMobileMenuOpen(false)} className="block pl-3 text-xs text-slate-300">WhatsApp AI Chatbots</Link>
-              <Link href="/services/crm-sync" onClick={() => setMobileMenuOpen(false)} className="block pl-3 text-xs text-slate-300">Lead CRM Auto-Sync</Link>
-              <Link href="/services/invoice-automation" onClick={() => setMobileMenuOpen(false)} className="block pl-3 text-xs text-slate-300">Invoice Automation</Link>
-              <Link href="/services/data-entry" onClick={() => setMobileMenuOpen(false)} className="block pl-3 text-xs text-slate-300">Data Entry OCR</Link>
-              <Link href="/services/custom-n8n" onClick={() => setMobileMenuOpen(false)} className="block pl-3 text-xs text-slate-300">Custom n8n Pipelines</Link>
+              {serviceItems.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="text-xs text-slate-300 hover:text-emerald-400 transition-colors pl-2 py-0.5"
+                >
+                  • {item.title}
+                </Link>
+              ))}
             </div>
 
-            <div className="pt-2 border-t border-emerald-500/20 space-y-2">
+            {/* Mobile Resources Section */}
+            <div className="pt-3 border-t border-emerald-500/20 flex flex-col gap-2.5">
               <div className="text-[10px] font-mono text-emerald-400 font-bold uppercase tracking-wider">Resources</div>
-              <Link href="/case-studies" onClick={() => setMobileMenuOpen(false)} className="block pl-3 text-xs text-slate-300">Case Studies</Link>
-              <Link href="/demo" onClick={() => setMobileMenuOpen(false)} className="block pl-3 text-xs text-slate-300">Live Demo Sandbox</Link>
-              <Link href="/blog" onClick={() => setMobileMenuOpen(false)} className="block pl-3 text-xs text-slate-300">Blog Hub</Link>
-              <Link href="/how-it-works" onClick={() => setMobileMenuOpen(false)} className="block pl-3 text-xs text-slate-300">How It Works</Link>
+              {resourceItems.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="text-xs text-slate-300 hover:text-emerald-400 transition-colors pl-2 py-0.5 flex items-center justify-between"
+                >
+                  <span>• {item.title}</span>
+                  {item.badge && (
+                    <span className="text-[9px] font-mono font-bold px-1.5 py-0.2 rounded bg-emerald-500 text-slate-950">
+                      {item.badge}
+                    </span>
+                  )}
+                </Link>
+              ))}
             </div>
 
-            <div className="pt-2 border-t border-emerald-500/20 space-y-2">
-              <Link href="/pricing" onClick={() => setMobileMenuOpen(false)}>Pricing & Plans</Link>
-              <Link href="/faq" onClick={() => setMobileMenuOpen(false)}>FAQ</Link>
-              <Link href="/support" onClick={() => setMobileMenuOpen(false)}>Support Desk</Link>
-              <Link href="/contact" onClick={() => setMobileMenuOpen(false)}>Contact Us</Link>
+            {/* Mobile Links */}
+            <div className="pt-3 border-t border-emerald-500/20 flex flex-col gap-3">
+              <Link href="/pricing" onClick={() => setMobileMenuOpen(false)} className="hover:text-emerald-400 transition-colors">
+                Pricing & Plans
+              </Link>
+              <Link href="/faq" onClick={() => setMobileMenuOpen(false)} className="hover:text-emerald-400 transition-colors">
+                FAQ
+              </Link>
+              <Link href="/support" onClick={() => setMobileMenuOpen(false)} className="hover:text-emerald-400 transition-colors">
+                Support Desk
+              </Link>
+              <Link href="/contact" onClick={() => setMobileMenuOpen(false)} className="hover:text-emerald-400 transition-colors">
+                Contact Us
+              </Link>
             </div>
           </nav>
           
-          <div className="pt-3 border-t border-emerald-500/20">
+          <div className="pt-4 border-t border-emerald-500/20">
             <Link
               href="/contact"
               onClick={() => setMobileMenuOpen(false)}
-              className="w-full flex items-center justify-center gap-2 px-5 py-3 rounded-xl font-bold text-slate-950 bg-emerald-500"
+              className="w-full flex items-center justify-center gap-2 px-5 py-3 rounded-xl font-bold text-slate-950 bg-emerald-500 hover:bg-emerald-400 transition-all shadow-lg shadow-emerald-500/20"
             >
               <span>Book Call</span>
               <ArrowRight className="w-4 h-4" />
