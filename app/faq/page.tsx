@@ -146,7 +146,7 @@ export default function FaqPage() {
   };
 
   return (
-    <main className="min-h-screen bg-slate-950 text-slate-100 pt-28 pb-20 px-4 sm:px-6 lg:px-8">
+    <main className="min-h-screen bg-[#040705] tech-grid-pattern text-slate-100 pt-28 pb-20 px-4 sm:px-6 lg:px-8">
       {/* Inject JSON-LD Schema */}
       <script
         type="application/ld+json"
@@ -156,10 +156,10 @@ export default function FaqPage() {
       <div className="max-w-4xl mx-auto space-y-12">
         {/* HERO */}
         <div className="text-center space-y-4">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold uppercase tracking-wider">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-mono font-bold uppercase tracking-wider">
             <HelpCircle className="w-3.5 h-3.5" /> Answers & Clarifications
           </div>
-          <h1 className="text-4xl sm:text-5xl font-extrabold text-slate-100 tracking-tight">
+          <h1 className="text-4xl sm:text-5xl font-display font-extrabold text-white tracking-tight">
             Frequently Asked Questions
           </h1>
           <p className="text-slate-400 max-w-2xl mx-auto text-base sm:text-lg">
@@ -171,8 +171,8 @@ export default function FaqPage() {
         <FaqAccordion categories={faqCategories} items={faqData} />
 
         {/* STILL HAVE QUESTIONS CTA */}
-        <div className="p-8 rounded-2xl bg-slate-900/60 border border-slate-800 text-center space-y-4 max-w-2xl mx-auto">
-          <h2 className="text-2xl font-bold text-slate-100">Still Have Questions?</h2>
+        <div className="p-8 rounded-2xl tech-card bg-[#07120a] border border-emerald-500/30 text-center space-y-4 max-w-2xl mx-auto shadow-2xl">
+          <h2 className="text-2xl font-display font-bold text-white">Still Have Questions?</h2>
           <p className="text-slate-300 text-sm">
             Have a specific workflow question or need a custom solution? Reach out directly to Ankit Maurya and our technical team.
           </p>
@@ -187,7 +187,7 @@ export default function FaqPage() {
             </a>
             <Link
               href="/contact"
-              className="py-3 px-6 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-100 border border-slate-700 font-bold text-sm transition-all inline-flex items-center justify-center gap-2"
+              className="py-3 px-6 rounded-xl bg-[#040705] hover:bg-[#09170e] text-slate-100 border border-emerald-500/30 font-bold text-sm transition-all inline-flex items-center justify-center gap-2"
             >
               <span>Contact Us</span>
               <ArrowRight className="w-4 h-4" />

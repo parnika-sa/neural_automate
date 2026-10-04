@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Mail, MessageSquare, MapPin, Globe, Share2, Check, ShieldCheck } from 'lucide-react';
+import { Mail, MessageSquare, MapPin, Globe, Share2, Check, ShieldCheck, Phone, Bot } from 'lucide-react';
 import { SITE_CONFIG } from '@/lib/site-config';
 
 export default function Footer() {
@@ -40,10 +40,10 @@ export default function Footer() {
   };
 
   return (
-    <footer className="bg-slate-950 border-t border-slate-800 pt-16 pb-12 relative overflow-hidden text-slate-400">
+    <footer className="bg-[#020503] border-t border-emerald-500/20 pt-16 pb-12 relative overflow-hidden text-slate-400">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 space-y-12">
         {/* TOP GRID */}
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 sm:gap-10 pb-12 border-b border-slate-800/80">
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 sm:gap-10 pb-12 border-b border-emerald-500/10">
           
           {/* BRAND COLUMN (2 cols on desktop) */}
           <div className="col-span-2 space-y-4">
@@ -57,8 +57,8 @@ export default function Footer() {
                   className="object-cover w-full h-full"
                 />
               </div>
-              <span className="font-extrabold text-xl text-slate-100 tracking-tight">
-                Neural<span className="text-emerald-400">Automate</span>.dev
+              <span className="font-display font-black text-xl text-white tracking-tight">
+                Neural<span className="gradient-text-electric">Automate</span>.dev
               </span>
             </Link>
 
@@ -71,7 +71,7 @@ export default function Footer() {
                 type="button"
                 onClick={handleGlobeClick}
                 title="Scroll to Top"
-                className="w-9 h-9 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-emerald-400 hover:border-emerald-500/40 transition-all cursor-pointer"
+                className="w-9 h-9 rounded-xl bg-[#07120a] border border-emerald-500/20 flex items-center justify-center text-slate-400 hover:text-emerald-400 hover:border-emerald-500/40 transition-all cursor-pointer"
               >
                 <Globe className="w-4 h-4" />
               </button>
@@ -80,7 +80,7 @@ export default function Footer() {
                 type="button"
                 onClick={handleShare}
                 title="Share Website Link"
-                className="w-9 h-9 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-emerald-400 hover:border-emerald-500/40 transition-all cursor-pointer relative"
+                className="w-9 h-9 rounded-xl bg-[#07120a] border border-emerald-500/20 flex items-center justify-center text-slate-400 hover:text-emerald-400 hover:border-emerald-500/40 transition-all cursor-pointer relative"
               >
                 {copied ? <Check className="w-4 h-4 text-emerald-400" /> : <Share2 className="w-4 h-4" />}
                 {copied && (
@@ -92,22 +92,28 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* COMPANY COLUMN */}
+          {/* COMPANY & EXPLORE COLUMN */}
           <div className="col-span-1 space-y-3">
-            <h4 className="font-bold text-slate-100 text-sm tracking-wide">Company</h4>
+            <h4 className="font-display font-bold text-white text-sm tracking-wide">Explore</h4>
             <ul className="space-y-2 text-xs">
               <li><Link href="/about" className="hover:text-emerald-400 transition-colors">About Us</Link></li>
-              <li><Link href="/pricing" className="hover:text-emerald-400 transition-colors">Pricing</Link></li>
-              <li><Link href="/faq" className="hover:text-emerald-400 transition-colors">FAQ</Link></li>
-              <li><Link href="/support" className="hover:text-emerald-400 transition-colors">Support Desk</Link></li>
-              <li><Link href="/contact" className="hover:text-emerald-400 transition-colors">Contact</Link></li>
+              <li><Link href="/how-it-works" className="hover:text-emerald-400 transition-colors">How It Works</Link></li>
+              <li><Link href="/services" className="hover:text-emerald-400 transition-colors">All Services</Link></li>
+              <li><Link href="/pricing" className="hover:text-emerald-400 transition-colors">Pricing & Plans</Link></li>
+              <li><Link href="/demo" className="hover:text-emerald-400 transition-colors flex items-center gap-1"><span>Live Demo</span> <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" /></Link></li>
+              <li><Link href="/case-studies" className="hover:text-emerald-400 transition-colors">Case Studies</Link></li>
+              <li><Link href="/blog" className="hover:text-emerald-400 transition-colors">Blog & Insights</Link></li>
+              <li><Link href="/calculator" className="hover:text-emerald-400 transition-colors">ROI Calculator</Link></li>
             </ul>
           </div>
 
           {/* LEGAL COLUMN */}
           <div className="col-span-1 space-y-3">
-            <h4 className="font-bold text-slate-100 text-sm tracking-wide">Legal & Policies</h4>
+            <h4 className="font-display font-bold text-white text-sm tracking-wide">Legal & Support</h4>
             <ul className="space-y-2 text-xs">
+              <li><Link href="/faq" className="hover:text-emerald-400 transition-colors">FAQ</Link></li>
+              <li><Link href="/support" className="hover:text-emerald-400 transition-colors">Support Desk</Link></li>
+              <li><Link href="/contact" className="hover:text-emerald-400 transition-colors">Contact Us</Link></li>
               <li><Link href="/privacy" className="hover:text-emerald-400 transition-colors">Privacy Policy</Link></li>
               <li><Link href="/terms" className="hover:text-emerald-400 transition-colors">Terms of Service</Link></li>
               <li><Link href="/refund-policy" className="hover:text-emerald-400 transition-colors">Refund Policy</Link></li>
@@ -133,22 +139,34 @@ export default function Footer() {
 
           {/* CONTACT & DISCLOSURES COLUMN */}
           <div className="col-span-2 lg:col-span-1 space-y-3">
-            <h4 className="font-bold text-slate-100 text-sm tracking-wide">Contact Us</h4>
-            <div className="space-y-2 text-xs">
+            <h4 className="font-display font-bold text-white text-sm tracking-wide">Direct Reach</h4>
+            <div className="space-y-2.5 text-xs">
               <p className="flex items-center gap-2">
                 <Mail className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
                 <a href={`mailto:${SITE_CONFIG.email}`} className="hover:text-emerald-400 transition-colors">{SITE_CONFIG.email}</a>
               </p>
+
+              {/* NEO Phone Line */}
+              <p className="flex items-center gap-2">
+                <Bot className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                <a href={SITE_CONFIG.neoWhatsappUrl} target="_blank" rel="noopener noreferrer" className="hover:text-emerald-400 transition-colors">
+                  {SITE_CONFIG.neoPhoneDisplay} <span className="text-[10px] text-emerald-400 font-mono font-bold">(NEO - AI Sales)</span>
+                </a>
+              </p>
+
+              {/* WhatsApp Founder Line */}
               <p className="flex items-center gap-2">
                 <MessageSquare className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
                 <a href={SITE_CONFIG.whatsappUrl} target="_blank" rel="noopener noreferrer" className="hover:text-emerald-400 transition-colors">
-                  {SITE_CONFIG.whatsappDisplay}
+                  {SITE_CONFIG.whatsappDisplay} <span className="text-[10px] text-slate-400 font-mono">(IN Founder)</span>
                 </a>
               </p>
+
               <p className="flex items-center gap-2">
                 <MapPin className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
                 <span>{SITE_CONFIG.location}</span>
               </p>
+
               <div className="pt-2 text-[11px] text-slate-500 leading-normal flex items-start gap-1.5">
                 <ShieldCheck className="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" />
                 <span>{SITE_CONFIG.businessModel}</span>

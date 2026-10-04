@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Currency, 
@@ -23,7 +24,6 @@ import {
   ChevronDown, 
   ChevronUp, 
   ArrowRight, 
-  ShieldCheck, 
   Info, 
   Code2, 
   TrendingUp, 
@@ -32,14 +32,18 @@ import {
   MessageSquare,
   Download,
   Share2,
-  MessageCircle
+  MessageCircle,
+  Activity,
+  CreditCard
 } from 'lucide-react';
 
-// Pricing Client Component: Main interactive component for tab switching, currency toggles, tables, FAQs, & PDF downloads
+// Pricing Client Component: Main interactive component for tab switching, currency toggles, tables, FAQs, & Razorpay checkout
 export default function PricingClient() {
+  const router = useRouter();
   const [currency, setCurrency] = useState<Currency>('INR');
   const [activeTab, setActiveTab] = useState<'website' | 'marketing' | 'automation'>('website');
   const [openFaq, setOpenFaq] = useState<number | null>(0);
+  const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
 
   // Tab definitions array
   const tabs = [
@@ -78,6 +82,85 @@ export default function PricingClient() {
     }
   };
 
+  // Razorpay Payment Handler
+  const handleCheckout = async (planName: string, quoteOnly?: boolean) => {
+    if (quoteOnly || currency === 'USD') {
+      router.push(`/contact?plan=${encodeURIComponent(planName)}&currency=${currency}`);
+      return;
+    }
+
+    setLoadingPlan(planName);
+
+    try {
+      // 1. Load Razorpay SDK script dynamically if not present
+      if (typeof (window as any).Razorpay === 'undefined') {
+        await new Promise<void>((resolve, reject) => {
+          const script = document.createElement('script');
+          script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+          script.onload = () => resolve();
+          script.onerror = () => reject(new Error('Failed to load Razorpay SDK'));
+          document.body.appendChild(script);
+        });
+      }
+
+      // 2. Request backend order creation
+      const res = await fetch('/api/checkout/razorpay', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ planName }),
+      });
+
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || 'Failed to create Razorpay order.');
+      }
+
+      // 3. Configure Razorpay modal options
+      const options = {
+        key: data.keyId,
+        amount: data.amount,
+        currency: data.currency || 'INR',
+        name: 'NeuralAutomate.dev',
+        description: `Payment for ${planName}`,
+        order_id: data.orderId,
+        handler: async function (response: any) {
+          try {
+            await fetch('/api/checkout/razorpay/verify', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature,
+                planName,
+              }),
+            });
+          } catch (err) {
+            console.error('[RAZORPAY VERIFY ERROR]:', err);
+          }
+          router.push('/thank-you?source=payment');
+        },
+        prefill: {
+          name: '',
+          email: '',
+          contact: '',
+        },
+        theme: {
+          color: '#10b981',
+        },
+      };
+
+      const rzp = new (window as any).Razorpay(options);
+      rzp.open();
+    } catch (err: any) {
+      console.error('[RAZORPAY CHECKOUT ERROR]:', err);
+      // Fallback redirect to contact page if checkout popup fails
+      router.push(`/contact?plan=${encodeURIComponent(planName)}&currency=INR`);
+    } finally {
+      setLoadingPlan(null);
+    }
+  };
+
   return (
     <div className="space-y-16">
       
@@ -87,7 +170,7 @@ export default function PricingClient() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6">
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-mono font-bold">
           <Sparkles className="w-3.5 h-3.5" />
-          <span>Transparent Pricing & Clear Deliverables</span>
+          <span>Transparent Pricing & Instant Checkout</span>
         </div>
 
         <h1 className="text-4xl sm:text-6xl font-display font-extrabold text-white tracking-tight">
@@ -95,7 +178,7 @@ export default function PricingClient() {
         </h1>
 
         <p className="text-slate-400 text-sm sm:text-base max-w-2xl mx-auto leading-relaxed">
-          From custom Next.js websites and high-ROI digital marketing to autonomous n8n workflows. No hidden fees, full code ownership.
+          From custom Next.js websites and high-ROI digital marketing to autonomous n8n workflows. Pay securely online via Razorpay or request a custom proposal.
         </p>
 
         {/* Currency Switcher Toggle */}
@@ -115,7 +198,7 @@ export default function PricingClient() {
                   : 'text-slate-400 hover:text-white'
               }`}
             >
-              <span>🇮🇳 INR (India)</span>
+              <span>🇮🇳 INR (Razorpay Instant)</span>
             </button>
 
             <button
@@ -133,7 +216,7 @@ export default function PricingClient() {
           </div>
 
           <span className="text-[11px] font-mono text-slate-400">
-            {currency === 'INR' ? 'Prices shown in INR (₹)' : 'Prices shown in USD ($) for international clients'}
+            {currency === 'INR' ? 'Prices shown in INR (₹) • Razorpay Instant Checkout Available' : 'Prices shown in USD ($) for international clients'}
           </span>
         </div>
 
@@ -146,7 +229,7 @@ export default function PricingClient() {
           >
             <div className="flex items-center gap-2.5 text-left">
               <Globe className="w-5 h-5 text-emerald-400 shrink-0" />
-              <span>International payments are handled via custom arrangement. Email <strong className="text-emerald-400">info@neuralautomate.dev</strong> or chat with us.</span>
+              <span>International payments are handled via Stripe / custom invoice. Email <strong className="text-emerald-400">info@neuralautomate.dev</strong> or chat with us.</span>
             </div>
             <a
               href="mailto:info@neuralautomate.dev?subject=International%20Pricing%20Inquiry"
@@ -167,7 +250,7 @@ export default function PricingClient() {
           <div 
             role="tablist" 
             aria-label="Pricing Categories" 
-            className="flex flex-wrap items-center justify-center gap-2 p-2 rounded-2xl bg-[#07120a] border border-tech-border w-full sm:w-auto"
+            className="flex flex-wrap items-center justify-center gap-2 p-2 rounded-2xl bg-[#07120a] border border-emerald-500/20 w-full sm:w-auto"
           >
             {tabs.map((tab, idx) => {
               const Icon = tab.icon;
@@ -244,12 +327,12 @@ export default function PricingClient() {
                   </p>
                 </div>
 
-                {/* Table Container (Mobile Horizontal Scrollable Wrapper) */}
-                <div className="tech-card rounded-2xl border border-tech-border overflow-hidden bg-[#07120a] shadow-xl">
+                {/* Table Container */}
+                <div className="tech-card rounded-2xl border border-emerald-500/20 overflow-hidden bg-[#07120a] shadow-xl">
                   <div className="overflow-x-auto w-full">
                     <table className="w-full text-left border-collapse text-xs sm:text-sm" aria-label={section.title}>
                       <thead>
-                        <tr className="bg-[#040805] text-slate-300 font-mono text-[11px] uppercase border-b border-tech-border">
+                        <tr className="bg-[#040805] text-slate-300 font-mono text-[11px] uppercase border-b border-emerald-500/20">
                           {section.columns.map((col, cIdx) => (
                             <th 
                               key={cIdx} 
@@ -261,15 +344,15 @@ export default function PricingClient() {
                               {col}
                             </th>
                           ))}
-                          <th scope="col" className="py-3.5 px-4 sm:px-6 font-bold tracking-wider text-right min-w-[120px]">
+                          <th scope="col" className="py-3.5 px-4 sm:px-6 font-bold tracking-wider text-right min-w-[130px]">
                             Action
                           </th>
                         </tr>
                       </thead>
-                      <tbody className="divide-y divide-tech-border/40 text-slate-300">
+                      <tbody className="divide-y divide-emerald-500/10 text-slate-300">
                         {section.rows.map((row) => {
-                          const contactUrl = `/contact?plan=${encodeURIComponent(row.name)}&currency=${currency}`;
-                          
+                          const isLoadingThis = loadingPlan === row.name;
+
                           return (
                             <tr 
                               key={row.slug}
@@ -277,8 +360,8 @@ export default function PricingClient() {
                                 row.popular ? 'bg-emerald-950/10' : ''
                               }`}
                             >
-                              {/* Package / Service Name (Sticky Left on Mobile) */}
-                              <td className="py-4 px-4 sm:px-6 sticky left-0 bg-[#07120a] group-hover:bg-[#09170e] z-10 font-bold text-white border-r border-tech-border/30">
+                              {/* Package / Service Name */}
+                              <td className="py-4 px-4 sm:px-6 sticky left-0 bg-[#07120a] group-hover:bg-[#09170e] z-10 font-bold text-white border-r border-emerald-500/20">
                                 <div className="flex flex-col gap-1 items-start">
                                   <div className="flex items-center gap-2">
                                     <span>{row.name}</span>
@@ -327,19 +410,35 @@ export default function PricingClient() {
                                 </td>
                               )}
 
-                              {/* Action CTA Button */}
+                              {/* Action CTA Button (Triggers Razorpay if INR & not quoteOnly) */}
                               <td className="py-4 px-4 sm:px-6 text-right whitespace-nowrap">
-                                <Link
-                                  href={contactUrl}
-                                  className={`inline-flex items-center gap-1 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                                <button
+                                  type="button"
+                                  onClick={() => handleCheckout(row.name, row.quoteOnly)}
+                                  disabled={isLoadingThis}
+                                  className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                                     row.popular
                                       ? 'bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-md shadow-emerald-500/20'
-                                      : 'bg-tech-card border border-tech-border text-slate-200 hover:border-emerald-500/40 hover:text-white'
+                                      : 'bg-[#040705] border border-emerald-500/30 text-slate-200 hover:border-emerald-400 hover:text-white'
                                   }`}
                                 >
-                                  <span>{row.quoteOnly ? 'Get Quote' : 'Get Started'}</span>
-                                  <ArrowRight className="w-3 h-3" />
-                                </Link>
+                                  {isLoadingThis ? (
+                                    <>
+                                      <Activity className="w-3.5 h-3.5 animate-spin" />
+                                      <span>Initializing...</span>
+                                    </>
+                                  ) : row.quoteOnly || currency === 'USD' ? (
+                                    <>
+                                      <span>Get Quote</span>
+                                      <ArrowRight className="w-3 h-3" />
+                                    </>
+                                  ) : (
+                                    <>
+                                      <CreditCard className="w-3.5 h-3.5" />
+                                      <span>Pay Online</span>
+                                    </>
+                                  )}
+                                </button>
                               </td>
                             </tr>
                           );
@@ -364,7 +463,7 @@ export default function PricingClient() {
       </div>
 
       {/* =================================================== */}
-      {/* BUNDLE PACKS SECTION (HTML TABLE) */}
+      {/* BUNDLE PACKS SECTION */}
       {/* =================================================== */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 pt-6">
         <div className="space-y-1 border-l-2 border-emerald-500 pl-4">
@@ -376,15 +475,15 @@ export default function PricingClient() {
             Bundle Packs
           </h2>
           <p className="text-xs sm:text-sm text-slate-400">
-            Combine development, marketing, and AI automation into a unified monthly growth system.
+            Combine development, marketing, and AI automation into a unified growth system with Razorpay checkout.
           </p>
         </div>
 
-        <div className="tech-card rounded-2xl border border-tech-border overflow-hidden bg-[#07120a] shadow-xl">
+        <div className="tech-card rounded-2xl border border-emerald-500/20 overflow-hidden bg-[#07120a] shadow-xl">
           <div className="overflow-x-auto w-full">
             <table className="w-full text-left border-collapse text-xs sm:text-sm" aria-label="Bundle Packs">
               <thead>
-                <tr className="bg-[#040805] text-slate-300 font-mono text-[11px] uppercase border-b border-tech-border">
+                <tr className="bg-[#040805] text-slate-300 font-mono text-[11px] uppercase border-b border-emerald-500/20">
                   <th scope="col" className="py-3.5 px-4 sm:px-6 font-bold tracking-wider sticky left-0 bg-[#040805] z-20 min-w-[180px]">Bundle</th>
                   <th scope="col" className="py-3.5 px-4 sm:px-6 font-bold tracking-wider">What's Included</th>
                   <th scope="col" className="py-3.5 px-4 sm:px-6 font-bold tracking-wider">One-time Setup</th>
@@ -392,9 +491,9 @@ export default function PricingClient() {
                   <th scope="col" className="py-3.5 px-4 sm:px-6 font-bold tracking-wider text-right">Action</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-tech-border/40 text-slate-300">
+              <tbody className="divide-y divide-emerald-500/10 text-slate-300">
                 {bundlePacks.map((bundle) => {
-                  const contactUrl = `/contact?plan=${encodeURIComponent(bundle.name)}&currency=${currency}`;
+                  const isLoadingThis = loadingPlan === bundle.name;
 
                   return (
                     <tr 
@@ -403,7 +502,7 @@ export default function PricingClient() {
                         bundle.popular ? 'bg-emerald-950/10' : ''
                       }`}
                     >
-                      <td className="py-4 px-4 sm:px-6 sticky left-0 bg-[#07120a] group-hover:bg-[#09170e] z-10 font-bold text-white border-r border-tech-border/30">
+                      <td className="py-4 px-4 sm:px-6 sticky left-0 bg-[#07120a] group-hover:bg-[#09170e] z-10 font-bold text-white border-r border-emerald-500/20">
                         <div className="flex flex-col gap-1 items-start">
                           <span>{bundle.name}</span>
                           {bundle.popular && (
@@ -425,17 +524,33 @@ export default function PricingClient() {
                         <span className="text-[10px] text-slate-400 font-normal ml-1">/mo</span>
                       </td>
                       <td className="py-4 px-4 sm:px-6 text-right whitespace-nowrap">
-                        <Link
-                          href={contactUrl}
-                          className={`inline-flex items-center gap-1 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                        <button
+                          type="button"
+                          onClick={() => handleCheckout(bundle.name)}
+                          disabled={isLoadingThis}
+                          className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                             bundle.popular
                               ? 'bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-md shadow-emerald-500/20'
-                              : 'bg-tech-card border border-tech-border text-slate-200 hover:border-emerald-500/40 hover:text-white'
+                              : 'bg-[#040705] border border-emerald-500/30 text-slate-200 hover:border-emerald-400 hover:text-white'
                           }`}
                         >
-                          <span>Get Started</span>
-                          <ArrowRight className="w-3 h-3" />
-                        </Link>
+                          {isLoadingThis ? (
+                            <>
+                              <Activity className="w-3.5 h-3.5 animate-spin" />
+                              <span>Initializing...</span>
+                            </>
+                          ) : currency === 'USD' ? (
+                            <>
+                              <span>Get Quote</span>
+                              <ArrowRight className="w-3 h-3" />
+                            </>
+                          ) : (
+                            <>
+                              <CreditCard className="w-3.5 h-3.5" />
+                              <span>Pay Online</span>
+                            </>
+                          )}
+                        </button>
                       </td>
                     </tr>
                   );
@@ -452,7 +567,7 @@ export default function PricingClient() {
       </section>
 
       {/* =================================================== */}
-      {/* TERMS AND NOTES SECTION (HTML TABLE) */}
+      {/* TERMS AND NOTES SECTION */}
       {/* =================================================== */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 pt-6">
         <div className="space-y-1 border-l-2 border-emerald-500 pl-4">
@@ -464,19 +579,19 @@ export default function PricingClient() {
           </p>
         </div>
 
-        <div className="tech-card rounded-2xl border border-tech-border overflow-hidden bg-[#07120a] shadow-xl">
+        <div className="tech-card rounded-2xl border border-emerald-500/20 overflow-hidden bg-[#07120a] shadow-xl">
           <div className="overflow-x-auto w-full">
             <table className="w-full text-left border-collapse text-xs sm:text-sm" aria-label="Terms and Notes">
               <thead>
-                <tr className="bg-[#040805] text-slate-300 font-mono text-[11px] uppercase border-b border-tech-border">
+                <tr className="bg-[#040805] text-slate-300 font-mono text-[11px] uppercase border-b border-emerald-500/20">
                   <th scope="col" className="py-3.5 px-4 sm:px-6 font-bold tracking-wider sticky left-0 bg-[#040805] z-20 min-w-[160px] sm:min-w-[200px]">Point</th>
                   <th scope="col" className="py-3.5 px-4 sm:px-6 font-bold tracking-wider">Detail</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-tech-border/40 text-slate-300">
+              <tbody className="divide-y divide-emerald-500/10 text-slate-300">
                 {termsAndNotes.map((term, idx) => (
                   <tr key={idx} className="transition-colors hover:bg-emerald-950/20 group">
-                    <td className="py-4 px-4 sm:px-6 sticky left-0 bg-[#07120a] group-hover:bg-[#09170e] z-10 font-bold text-white border-r border-tech-border/30 whitespace-nowrap">
+                    <td className="py-4 px-4 sm:px-6 sticky left-0 bg-[#07120a] group-hover:bg-[#09170e] z-10 font-bold text-white border-r border-emerald-500/20 whitespace-nowrap">
                       {term.point}
                     </td>
                     <td className="py-4 px-4 sm:px-6 text-slate-300 leading-relaxed">
@@ -511,7 +626,7 @@ export default function PricingClient() {
               <div
                 key={idx}
                 onClick={() => setOpenFaq(isOpen ? null : idx)}
-                className="tech-card rounded-2xl p-6 border border-tech-border cursor-pointer transition-all hover:border-emerald-500/40 bg-[#07120a]"
+                className="tech-card rounded-2xl p-6 border border-emerald-500/20 cursor-pointer transition-all hover:border-emerald-500/40 bg-[#07120a]"
               >
                 <div className="flex items-center justify-between gap-4">
                   <h3 className="text-sm sm:text-base font-bold text-white flex items-center gap-2">
@@ -523,7 +638,7 @@ export default function PricingClient() {
                   </button>
                 </div>
                 {isOpen && (
-                  <p className="mt-3 text-xs sm:text-sm text-slate-300 leading-relaxed border-t border-tech-border/60 pt-3">
+                  <p className="mt-3 text-xs sm:text-sm text-slate-300 leading-relaxed border-t border-emerald-500/20 pt-3">
                     {faq.answer}
                   </p>
                 )}
@@ -537,7 +652,7 @@ export default function PricingClient() {
       {/* DOWNLOAD FULL PRICE GUIDE & WHATSAPP SHARE SECTION */}
       {/* =================================================== */}
       <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
-        <div className="tech-card rounded-3xl p-6 sm:p-10 border border-tech-border bg-[#07120a] space-y-6">
+        <div className="tech-card rounded-3xl p-6 sm:p-10 border border-emerald-500/20 bg-[#07120a] space-y-6">
           <div className="text-center space-y-2 max-w-xl mx-auto">
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-mono font-bold">
               <Download className="w-3.5 h-3.5" />
@@ -556,7 +671,7 @@ export default function PricingClient() {
             <a
               href={`/pricing-pdfs/NeuralAutomate-Pricing-Website-${currency}.pdf`}
               download
-              className="p-4 rounded-2xl bg-[#040805] border border-tech-border hover:border-emerald-500/40 text-center space-y-2 group transition-all"
+              className="p-4 rounded-2xl bg-[#040805] border border-emerald-500/20 hover:border-emerald-500/40 text-center space-y-2 group transition-all"
             >
               <Code2 className="w-6 h-6 text-emerald-400 mx-auto group-hover:scale-110 transition-transform" />
               <div className="font-bold text-xs text-white">Website Dev PDF</div>
@@ -566,7 +681,7 @@ export default function PricingClient() {
             <a
               href={`/pricing-pdfs/NeuralAutomate-Pricing-Marketing-${currency}.pdf`}
               download
-              className="p-4 rounded-2xl bg-[#040805] border border-tech-border hover:border-emerald-500/40 text-center space-y-2 group transition-all"
+              className="p-4 rounded-2xl bg-[#040805] border border-emerald-500/20 hover:border-emerald-500/40 text-center space-y-2 group transition-all"
             >
               <TrendingUp className="w-6 h-6 text-emerald-400 mx-auto group-hover:scale-110 transition-transform" />
               <div className="font-bold text-xs text-white">Marketing PDF</div>
@@ -576,7 +691,7 @@ export default function PricingClient() {
             <a
               href={`/pricing-pdfs/NeuralAutomate-Pricing-Automation-${currency}.pdf`}
               download
-              className="p-4 rounded-2xl bg-[#040805] border border-tech-border hover:border-emerald-500/40 text-center space-y-2 group transition-all"
+              className="p-4 rounded-2xl bg-[#040805] border border-emerald-500/20 hover:border-emerald-500/40 text-center space-y-2 group transition-all"
             >
               <Cpu className="w-6 h-6 text-emerald-400 mx-auto group-hover:scale-110 transition-transform" />
               <div className="font-bold text-xs text-white">Automation PDF</div>
@@ -615,7 +730,7 @@ export default function PricingClient() {
       <section className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
         <div className="tech-card rounded-3xl p-8 sm:p-12 border border-emerald-500/30 bg-gradient-to-b from-[#09170e] to-[#040805] text-center space-y-6 shadow-2xl relative overflow-hidden">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-mono font-bold">
-            <ShieldCheck className="w-4 h-4" />
+            <CreditCard className="w-4 h-4" />
             <span>Need a Custom Solution?</span>
           </div>
 
@@ -638,7 +753,7 @@ export default function PricingClient() {
 
             <Link
               href="/contact"
-              className="px-6 py-3.5 rounded-xl font-bold text-xs sm:text-sm text-slate-200 bg-tech-card border border-tech-border hover:border-emerald-500/40 hover:text-white transition-all flex items-center gap-2"
+              className="px-6 py-3.5 rounded-xl font-bold text-xs sm:text-sm text-slate-200 bg-[#07120a] border border-emerald-500/30 hover:border-emerald-400 hover:text-white transition-all flex items-center gap-2"
             >
               <MessageSquare className="w-4 h-4 text-emerald-400" />
               <span>Book a Free Call</span>

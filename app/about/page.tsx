@@ -9,7 +9,6 @@ import {
   Compass,
   CheckCircle2,
   Cpu,
-  Layers,
   ArrowRight,
   MessageSquare,
   ShieldCheck,
@@ -40,7 +39,7 @@ const workSteps = [
   {
     step: '01',
     title: 'Discover',
-    desc: 'We analyze your current manual bottlenecks, lead intake flow, and website goals in a initial consultation.',
+    desc: 'We analyze your current manual bottlenecks, lead intake flow, and website goals in an initial consultation.',
   },
   {
     step: '02',
@@ -107,7 +106,7 @@ export default function AboutPage() {
   };
 
   return (
-    <main className="min-h-screen bg-slate-950 text-slate-100 pt-28 pb-20 px-4 sm:px-6 lg:px-8">
+    <main className="min-h-screen bg-[#040705] tech-grid-pattern text-slate-100 pt-28 pb-20 px-4 sm:px-6 lg:px-8">
       {/* Inject Schema */}
       <script
         type="application/ld+json"
@@ -117,12 +116,12 @@ export default function AboutPage() {
       <div className="max-w-5xl mx-auto space-y-20">
         {/* 1. HERO SECTION */}
         <section className="text-center space-y-6 max-w-3xl mx-auto">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold uppercase tracking-wider">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-mono font-bold uppercase tracking-wider">
             <Sparkles className="w-3.5 h-3.5" /> Founder-Led AI Automation Studio
           </div>
-          <h1 className="text-4xl sm:text-6xl font-extrabold text-slate-100 tracking-tight leading-tight">
+          <h1 className="text-4xl sm:text-6xl font-display font-extrabold text-white tracking-tight leading-tight">
             Automate Once. <br />
-            <span className="bg-gradient-to-r from-emerald-400 to-teal-200 bg-clip-text text-transparent">
+            <span className="gradient-text-electric">
               Scale Forever.
             </span>
           </h1>
@@ -132,12 +131,12 @@ export default function AboutPage() {
         </section>
 
         {/* 2. OUR STORY */}
-        <section className="p-8 sm:p-12 rounded-3xl bg-slate-900/60 border border-slate-800 space-y-6">
+        <section className="p-8 sm:p-12 rounded-3xl tech-card border border-emerald-500/20 bg-[#07120a] space-y-6">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+            <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
               <Compass className="w-5 h-5" />
             </div>
-            <h2 className="text-2xl sm:text-3xl font-bold text-slate-100">Our Story</h2>
+            <h2 className="text-2xl sm:text-3xl font-display font-bold text-white">Our Story</h2>
           </div>
           <div className="text-slate-300 space-y-4 text-base leading-relaxed">
             <p>
@@ -151,21 +150,21 @@ export default function AboutPage() {
 
         {/* 3. MISSION AND VISION */}
         <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="p-8 rounded-2xl bg-slate-900/60 border border-slate-800 space-y-4">
-            <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+          <div className="p-8 rounded-2xl tech-card border border-emerald-500/20 bg-[#07120a] space-y-4">
+            <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
               <Target className="w-5 h-5" />
             </div>
-            <h3 className="text-2xl font-bold text-slate-100">Our Mission</h3>
+            <h3 className="text-2xl font-display font-bold text-white">Our Mission</h3>
             <p className="text-slate-300 text-sm leading-relaxed">
               To empower growing businesses with enterprise-grade web applications and 24/7 AI automations that turn website traffic into qualified leads automatically.
             </p>
           </div>
 
-          <div className="p-8 rounded-2xl bg-slate-900/60 border border-slate-800 space-y-4">
-            <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+          <div className="p-8 rounded-2xl tech-card border border-emerald-500/20 bg-[#07120a] space-y-4">
+            <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
               <Sparkles className="w-5 h-5" />
             </div>
-            <h3 className="text-2xl font-bold text-slate-100">Our Vision</h3>
+            <h3 className="text-2xl font-display font-bold text-white">Our Vision</h3>
             <p className="text-slate-300 text-sm leading-relaxed">
               A future where every ambitious company can deploy intelligent software pipelines and convert leads continuously without needing a massive internal engineering team.
             </p>
@@ -173,16 +172,16 @@ export default function AboutPage() {
         </section>
 
         {/* 4. FOUNDER NOTE */}
-        <section className="p-8 sm:p-10 rounded-3xl bg-gradient-to-br from-slate-900/90 via-slate-900/60 to-emerald-950/30 border border-emerald-500/20 space-y-6">
-          <div className="text-xs font-bold text-emerald-400 uppercase tracking-wider">
+        <section className="p-8 sm:p-10 rounded-3xl tech-card border border-emerald-500/40 bg-gradient-to-br from-[#09170e] via-[#07120a] to-[#040705] space-y-6 shadow-2xl">
+          <div className="text-xs font-mono font-bold text-emerald-400 uppercase tracking-wider">
             A Note From The Founder
           </div>
           <blockquote className="text-slate-200 text-lg sm:text-xl font-medium italic leading-relaxed">
             "When you work with NeuralAutomate.dev, you won't be passed off to junior account managers. I personally review every line of code, every design component, and every automation payload before it touches production. Combining human accountability with AI speed allows us to deliver high quality without charging agency markups."
           </blockquote>
           <div className="pt-2">
-            <div className="font-bold text-slate-100 text-lg">{SITE_CONFIG.operatorName}</div>
-            <div className="text-xs text-slate-400">Founder & Principal Engineer, NeuralAutomate.dev</div>
+            <div className="font-bold text-white text-lg">{SITE_CONFIG.operatorName}</div>
+            <div className="text-xs font-mono text-slate-400">Founder & Principal Engineer, NeuralAutomate.dev</div>
           </div>
         </section>
 
@@ -194,14 +193,14 @@ export default function AboutPage() {
         {/* 6. HOW WE WORK (4 STEPS) */}
         <section className="space-y-8">
           <div className="text-center space-y-2">
-            <h2 className="text-3xl font-bold text-slate-100">How We Work</h2>
+            <h2 className="text-3xl font-display font-bold text-white">How We Work</h2>
             <p className="text-slate-400 text-sm">A systematic 4-step workflow designed for clarity and speed.</p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {workSteps.map((ws) => (
-              <div key={ws.step} className="p-6 rounded-2xl bg-slate-900/60 border border-slate-800 space-y-3 relative overflow-hidden">
-                <div className="text-4xl font-black text-slate-800">{ws.step}</div>
-                <h3 className="text-xl font-bold text-slate-100">{ws.title}</h3>
+              <div key={ws.step} className="p-6 rounded-2xl tech-card border border-emerald-500/20 bg-[#07120a] space-y-3 relative overflow-hidden">
+                <div className="text-4xl font-black text-emerald-500/20 font-mono">{ws.step}</div>
+                <h3 className="text-xl font-display font-bold text-white">{ws.title}</h3>
                 <p className="text-xs text-slate-400 leading-relaxed">{ws.desc}</p>
               </div>
             ))}
@@ -211,19 +210,19 @@ export default function AboutPage() {
         {/* 7. OUR VALUES */}
         <section className="space-y-8">
           <div className="text-center space-y-2">
-            <h2 className="text-3xl font-bold text-slate-100">Our Core Values</h2>
+            <h2 className="text-3xl font-display font-bold text-white">Our Core Values</h2>
             <p className="text-slate-400 text-sm">Principles that guide every project commitment.</p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             {coreValues.map((v) => {
               const Icon = v.icon;
               return (
-                <div key={v.title} className="p-6 rounded-2xl bg-slate-900/60 border border-slate-800 flex items-start gap-4">
-                  <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 shrink-0">
+                <div key={v.title} className="p-6 rounded-2xl tech-card border border-emerald-500/20 bg-[#07120a] flex items-start gap-4">
+                  <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0">
                     <Icon className="w-5 h-5" />
                   </div>
                   <div className="space-y-1">
-                    <h3 className="text-lg font-bold text-slate-100">{v.title}</h3>
+                    <h3 className="text-lg font-bold text-white">{v.title}</h3>
                     <p className="text-xs text-slate-400 leading-relaxed">{v.desc}</p>
                   </div>
                 </div>
@@ -233,17 +232,17 @@ export default function AboutPage() {
         </section>
 
         {/* 8. TECH STACK */}
-        <section className="p-8 rounded-3xl bg-slate-900/60 border border-slate-800 space-y-6">
+        <section className="p-8 rounded-3xl tech-card border border-emerald-500/20 bg-[#07120a] space-y-6">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+            <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
               <Cpu className="w-5 h-5" />
             </div>
-            <h2 className="text-2xl font-bold text-slate-100">Our Technology Stack</h2>
+            <h2 className="text-2xl font-display font-bold text-white">Our Technology Stack</h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {techStackList.map((ts) => (
-              <div key={ts.name} className="p-4 rounded-xl bg-slate-950/60 border border-slate-800 space-y-1">
-                <div className="font-semibold text-emerald-400 text-sm">{ts.name}</div>
+              <div key={ts.name} className="p-4 rounded-xl bg-[#040705] border border-emerald-500/20 space-y-1">
+                <div className="font-mono font-bold text-emerald-400 text-sm">{ts.name}</div>
                 <div className="text-xs text-slate-400">{ts.desc}</div>
               </div>
             ))}
@@ -251,35 +250,35 @@ export default function AboutPage() {
         </section>
 
         {/* 9. WHY CHOOSE US */}
-        <section className="p-8 rounded-3xl bg-slate-900/40 border border-slate-800 space-y-6">
-          <h2 className="text-2xl font-bold text-slate-100 text-center">Why Businesses Choose Us</h2>
+        <section className="p-8 rounded-3xl tech-card border border-emerald-500/20 bg-[#07120a] space-y-6">
+          <h2 className="text-2xl font-display font-bold text-white text-center">Why Businesses Choose Us</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="p-4 rounded-xl bg-slate-950/60 border border-slate-800 text-center space-y-2">
+            <div className="p-4 rounded-xl bg-[#040705] border border-emerald-500/20 text-center space-y-2">
               <CheckCircle2 className="w-6 h-6 text-emerald-400 mx-auto" />
-              <h3 className="font-semibold text-slate-200 text-sm">Direct Founder Access</h3>
+              <h3 className="font-bold text-slate-200 text-sm">Direct Founder Access</h3>
               <p className="text-xs text-slate-400">Speak straight to the engineer building your system.</p>
             </div>
-            <div className="p-4 rounded-xl bg-slate-950/60 border border-slate-800 text-center space-y-2">
+            <div className="p-4 rounded-xl bg-[#040705] border border-emerald-500/20 text-center space-y-2">
               <Zap className="w-6 h-6 text-emerald-400 mx-auto" />
-              <h3 className="font-semibold text-slate-200 text-sm">Rapid Delivery</h3>
+              <h3 className="font-bold text-slate-200 text-sm">Rapid Delivery</h3>
               <p className="text-xs text-slate-400">Launch in 7 to 21 business days with staging previews.</p>
             </div>
-            <div className="p-4 rounded-xl bg-slate-950/60 border border-slate-800 text-center space-y-2">
+            <div className="p-4 rounded-xl bg-[#040705] border border-emerald-500/20 text-center space-y-2">
               <ShieldCheck className="w-6 h-6 text-emerald-400 mx-auto" />
-              <h3 className="font-semibold text-slate-200 text-sm">Pro-Rata Refunds</h3>
+              <h3 className="font-bold text-slate-200 text-sm">Pro-Rata Refunds</h3>
               <p className="text-xs text-slate-400">Cancel anytime with 3-5 days notice; pay only for work done.</p>
             </div>
-            <div className="p-4 rounded-xl bg-slate-950/60 border border-slate-800 text-center space-y-2">
+            <div className="p-4 rounded-xl bg-[#040705] border border-emerald-500/20 text-center space-y-2">
               <Cpu className="w-6 h-6 text-emerald-400 mx-auto" />
-              <h3 className="font-semibold text-slate-200 text-sm">24/7 AI Automation</h3>
+              <h3 className="font-bold text-slate-200 text-sm">24/7 AI Automation</h3>
               <p className="text-xs text-slate-400">Automate lead intake and support using official APIs.</p>
             </div>
           </div>
         </section>
 
         {/* 10. CTA SECTION */}
-        <section className="text-center space-y-6 p-10 rounded-3xl bg-gradient-to-r from-slate-900 via-emerald-950/40 to-slate-900 border border-emerald-500/30 shadow-2xl">
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-100">
+        <section className="text-center space-y-6 p-10 rounded-3xl tech-card border border-emerald-500/30 bg-gradient-to-r from-[#040705] via-[#08180e] to-[#040705] shadow-2xl">
+          <h2 className="text-3xl sm:text-4xl font-display font-extrabold text-white">
             Ready to Automate Your Business?
           </h2>
           <p className="text-slate-300 text-base max-w-xl mx-auto">
@@ -297,7 +296,7 @@ export default function AboutPage() {
               href={SITE_CONFIG.whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="py-3.5 px-8 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-100 border border-slate-700 font-bold text-sm transition-all inline-flex items-center justify-center gap-2"
+              className="py-3.5 px-8 rounded-xl bg-[#07120a] hover:bg-[#0a180d] text-white border border-emerald-500/30 font-bold text-sm transition-all inline-flex items-center justify-center gap-2"
             >
               <MessageSquare className="w-4 h-4 text-emerald-400" /> Chat on WhatsApp
             </a>

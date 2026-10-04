@@ -46,7 +46,7 @@ export default function FaqAccordion({ categories, items }: FaqAccordionProps) {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search FAQs (e.g. refund, WhatsApp, pricing, timeline)..."
-            className="w-full pl-12 pr-4 py-3.5 rounded-2xl bg-slate-900/80 border border-slate-800 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-emerald-500 text-sm transition-all shadow-inner"
+            className="w-full pl-12 pr-4 py-3.5 rounded-2xl bg-[#040705] border border-emerald-500/30 text-white placeholder-slate-500 focus:outline-none focus:border-emerald-400 text-sm transition-all shadow-inner"
           />
         </div>
 
@@ -58,10 +58,10 @@ export default function FaqAccordion({ categories, items }: FaqAccordionProps) {
               role="tab"
               aria-selected={selectedCategory === cat}
               onClick={() => setSelectedCategory(cat)}
-              className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all ${
+              className={`px-4 py-2 rounded-xl text-xs font-mono font-bold transition-all cursor-pointer ${
                 selectedCategory === cat
                   ? 'bg-emerald-500 text-slate-950 shadow-md shadow-emerald-500/20'
-                  : 'bg-slate-900/60 text-slate-400 border border-slate-800 hover:border-slate-700 hover:text-slate-200'
+                  : 'bg-[#07120a] text-slate-400 border border-emerald-500/20 hover:border-emerald-500/40 hover:text-white'
               }`}
             >
               {cat}
@@ -72,7 +72,7 @@ export default function FaqAccordion({ categories, items }: FaqAccordionProps) {
 
       {/* ACCORDION LIST */}
       {filteredItems.length === 0 ? (
-        <div className="text-center py-12 px-4 rounded-2xl bg-slate-900/40 border border-slate-800 space-y-2">
+        <div className="text-center py-12 px-4 rounded-2xl tech-card bg-[#07120a] border border-emerald-500/20 space-y-2">
           <p className="text-slate-300 font-semibold">No matching questions found</p>
           <p className="text-xs text-slate-500">Try adjusting your search terms or selecting another category.</p>
         </div>
@@ -83,10 +83,10 @@ export default function FaqAccordion({ categories, items }: FaqAccordionProps) {
             return (
               <div
                 key={item.id}
-                className={`rounded-2xl border transition-all overflow-hidden ${
+                className={`rounded-2xl border transition-all overflow-hidden tech-card ${
                   isOpen
-                    ? 'bg-slate-900/80 border-emerald-500/40 shadow-lg shadow-emerald-500/5'
-                    : 'bg-slate-900/40 border-slate-800/80 hover:border-slate-700'
+                    ? 'bg-[#09170e] border-emerald-500/50 shadow-lg shadow-emerald-500/10'
+                    : 'bg-[#07120a] border-emerald-500/20 hover:border-emerald-500/40'
                 }`}
               >
                 <button
@@ -96,12 +96,12 @@ export default function FaqAccordion({ categories, items }: FaqAccordionProps) {
                   aria-controls={`faq-answer-${item.id}`}
                   className="w-full px-6 py-5 text-left flex items-center justify-between gap-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
                 >
-                  <span className="font-semibold text-slate-100 text-base sm:text-lg leading-snug">
+                  <span className="font-display font-bold text-white text-base sm:text-lg leading-snug">
                     {item.question}
                   </span>
                   <span
                     className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 transition-transform duration-300 ${
-                      isOpen ? 'bg-emerald-500/10 text-emerald-400 rotate-180' : 'bg-slate-800/60 text-slate-400'
+                      isOpen ? 'bg-emerald-500/20 text-emerald-400 rotate-180' : 'bg-[#040705] text-slate-400'
                     }`}
                   >
                     <ChevronDown className="w-4 h-4" />
@@ -117,9 +117,9 @@ export default function FaqAccordion({ categories, items }: FaqAccordionProps) {
                       exit={{ height: 0, opacity: 0 }}
                       transition={{ duration: 0.25, ease: 'easeInOut' }}
                     >
-                      <div className="px-6 pb-6 pt-1 text-slate-300 text-sm leading-relaxed border-t border-slate-800/40 space-y-3">
+                      <div className="px-6 pb-6 pt-1 text-slate-300 text-sm leading-relaxed border-t border-emerald-500/20 space-y-3">
                         <p>{item.answer}</p>
-                        <div className="inline-block px-2.5 py-0.5 rounded-full bg-slate-800/60 text-emerald-400 text-[11px] font-medium">
+                        <div className="inline-block px-2.5 py-0.5 rounded-full bg-[#040705] border border-emerald-500/20 text-emerald-400 text-[11px] font-mono">
                           Category: {item.category}
                         </div>
                       </div>

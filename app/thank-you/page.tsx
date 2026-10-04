@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { SITE_CONFIG } from '@/lib/site-config';
-import { CheckCircle2, MessageSquare, Home, ArrowRight, Mail, Clock } from 'lucide-react';
+import { CheckCircle2, MessageSquare, Home, Clock } from 'lucide-react';
 
 export const metadata: Metadata = {
   title: `Thank You | ${SITE_CONFIG.brandName}`,
@@ -48,20 +48,20 @@ export default function ThankYouPage({ searchParams }: ThankYouProps) {
   const details = getSourceDetails();
 
   return (
-    <main className="min-h-screen bg-slate-950 text-slate-100 pt-32 pb-20 px-4 sm:px-6 lg:px-8 flex items-center justify-center">
-      <div className="max-w-xl w-full text-center space-y-8 bg-slate-900/60 border border-slate-800 p-8 sm:p-12 rounded-3xl backdrop-blur-xl shadow-2xl relative overflow-hidden">
+    <main className="min-h-screen bg-[#040705] tech-grid-pattern text-slate-100 pt-32 pb-20 px-4 sm:px-6 lg:px-8 flex items-center justify-center">
+      <div className="max-w-xl w-full text-center space-y-8 tech-card bg-[#07120a] border border-emerald-500/30 p-8 sm:p-12 rounded-3xl backdrop-blur-xl shadow-2xl relative overflow-hidden">
         {/* Subtle Background Glow */}
         <div className="absolute -top-24 -left-24 w-48 h-48 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute -bottom-24 -right-24 w-48 h-48 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
 
         {/* ICON */}
-        <div className="w-20 h-20 rounded-3xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 flex items-center justify-center mx-auto shadow-lg shadow-emerald-500/10 animate-bounce-subtle">
+        <div className="w-20 h-20 rounded-3xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 flex items-center justify-center mx-auto shadow-lg shadow-emerald-500/10">
           <CheckCircle2 className="w-10 h-10" />
         </div>
 
         {/* HEADING & MESSAGE */}
         <div className="space-y-3">
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-100 tracking-tight">
+          <h1 className="text-3xl sm:text-4xl font-display font-extrabold text-white tracking-tight">
             {details.title}
           </h1>
           <p className="text-slate-300 text-base leading-relaxed">
@@ -70,8 +70,8 @@ export default function ThankYouPage({ searchParams }: ThankYouProps) {
         </div>
 
         {/* EXPECTATIONS BOX */}
-        <div className="p-4 rounded-2xl bg-slate-950/60 border border-slate-800 text-left space-y-3">
-          <div className="text-xs font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
+        <div className="p-4 rounded-2xl bg-[#040705] border border-emerald-500/20 text-left space-y-3">
+          <div className="text-xs font-mono font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
             <Clock className="w-3.5 h-3.5" /> Next Steps & Expectations
           </div>
           <ul className="text-xs text-slate-400 space-y-2">
@@ -99,7 +99,7 @@ export default function ThankYouPage({ searchParams }: ThankYouProps) {
 
           <Link
             href="/"
-            className="flex-1 py-3.5 px-6 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-bold text-sm transition-all flex items-center justify-center gap-2"
+            className="flex-1 py-3.5 px-6 rounded-xl bg-[#040705] hover:bg-[#09170e] text-slate-200 border border-emerald-500/30 font-bold text-sm transition-all flex items-center justify-center gap-2"
           >
             <Home className="w-4 h-4" /> Back to Home
           </Link>

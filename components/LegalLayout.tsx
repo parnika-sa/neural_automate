@@ -22,7 +22,7 @@ export default function LegalLayout({ title, subtitle, toc, children }: LegalLay
   const [mobileTocOpen, setMobileTocOpen] = useState(false);
 
   return (
-    <article className="pt-28 pb-20 text-white relative">
+    <article className="pt-28 pb-20 text-white relative min-h-screen bg-[#040705] tech-grid-pattern">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
         
         {/* Navigation Back Link */}
@@ -35,7 +35,7 @@ export default function LegalLayout({ title, subtitle, toc, children }: LegalLay
         </Link>
 
         {/* Page Header */}
-        <div className="space-y-3 border-b border-tech-border/60 pb-6">
+        <div className="space-y-3 border-b border-emerald-500/20 pb-6">
           <div className="flex flex-wrap items-center gap-3">
             <span className="text-xs font-mono text-emerald-400 font-bold uppercase tracking-widest px-3 py-1 rounded bg-emerald-500/10 border border-emerald-500/30 flex items-center gap-1.5">
               <Shield className="w-3.5 h-3.5" />
@@ -60,7 +60,7 @@ export default function LegalLayout({ title, subtitle, toc, children }: LegalLay
 
         {/* Mobile Collapsible Table of Contents */}
         {toc.length > 0 && (
-          <div className="lg:hidden tech-card rounded-2xl p-4 border border-tech-border bg-[#07120a]">
+          <div className="lg:hidden tech-card rounded-2xl p-4 border border-emerald-500/20 bg-[#07120a]">
             <button
               type="button"
               onClick={() => setMobileTocOpen(!mobileTocOpen)}
@@ -71,7 +71,7 @@ export default function LegalLayout({ title, subtitle, toc, children }: LegalLay
             </button>
 
             {mobileTocOpen && (
-              <ul className="mt-3 pt-3 border-t border-tech-border/50 space-y-2 text-xs text-slate-300 font-mono">
+              <ul className="mt-3 pt-3 border-t border-emerald-500/20 space-y-2 text-xs text-slate-300 font-mono">
                 {toc.map((item) => (
                   <li key={item.id}>
                     <a
@@ -94,7 +94,7 @@ export default function LegalLayout({ title, subtitle, toc, children }: LegalLay
           {/* Left Desktop Sticky Table of Contents */}
           {toc.length > 0 && (
             <aside className="hidden lg:block lg:col-span-1 space-y-4 sticky top-28 h-fit">
-              <div className="tech-card rounded-2xl p-5 border border-tech-border bg-[#07120a] space-y-3">
+              <div className="tech-card rounded-2xl p-5 border border-emerald-500/20 bg-[#07120a] space-y-3">
                 <h3 className="text-xs font-mono font-bold text-emerald-400 uppercase tracking-wider">
                   Table of Contents
                 </h3>
@@ -115,7 +115,7 @@ export default function LegalLayout({ title, subtitle, toc, children }: LegalLay
 
           {/* Right Main Article Content */}
           <main className={toc.length > 0 ? "lg:col-span-3 space-y-8" : "lg:col-span-4 space-y-8"}>
-            <div className="tech-card rounded-3xl p-6 sm:p-10 border border-tech-border bg-[#07120a] space-y-8 text-slate-300 text-sm leading-relaxed max-w-3xl">
+            <div className="tech-card rounded-3xl p-6 sm:p-10 border border-emerald-500/20 bg-[#07120a] space-y-8 text-slate-300 text-sm leading-relaxed max-w-3xl">
               {children}
             </div>
           </main>

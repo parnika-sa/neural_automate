@@ -39,7 +39,7 @@ export default function PricingPage() {
   };
 
   return (
-    <div className="pt-28 pb-20 text-white relative">
+    <div className="pt-28 pb-20 text-white relative min-h-screen bg-[#040705] tech-grid-pattern">
       {/* FAQ Schema Script Injection for Search Engine Indexing */}
       <script
         type="application/ld+json"
